@@ -29,5 +29,8 @@ fi
 echo "Environment setup complete."
 
 # General environment variables
-export PROJECT_ROOT="${PWD}/${PROJECT_NAME}/"
-export DATA_DIR="${PROJECT_ROOT}/data/"
+export PROJECT_ROOT=$PWD
+export SRC_ROOT="${PROJECT_ROOT}/${PROJECT_NAME}/"
+export DATA_DIR="${SRC_ROOT}/data/"
+
+export PYTHONPATH=$SRC_ROOT

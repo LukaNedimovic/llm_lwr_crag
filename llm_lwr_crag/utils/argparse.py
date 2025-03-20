@@ -6,6 +6,12 @@ __all__ = ["parse_args"]
 
 
 def parse_args() -> argparse.Namespace:
+    """
+    Parse cmdline arguments.
+
+    Returns:
+        args (argparse.Namespace): Parsed cmdline arguments
+    """
     parser = argparse.ArgumentParser(description="A simple command-line tool.")
 
     # Repository cloning

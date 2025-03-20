@@ -27,6 +27,14 @@ def setup_logger():
 
 
 def toggle_logger(status: Union[bool, int]):
+    """
+    Toggle logger given the specific status.
+    If status is provided as a bool (True / False), it will turn the logger on or off.
+    If status is provided as an int, it will shift the status level to it.
+
+    Args:
+        status (bool, int): Status to shift the logger to.
+    """
     if isinstance(status, bool):
         if status:
             logger.setLevel(logging.INFO)

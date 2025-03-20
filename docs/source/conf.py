@@ -6,7 +6,12 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
+import os
+import sys
 from typing import List
+
+project_root = os.getenv("PROJECT_ROOT", os.path.abspath("../.."))
+sys.path.insert(0, project_root)
 
 project = "LLM Listwise Reranker for CodeRAG"
 copyright = "2025, Luka Nedimović"
