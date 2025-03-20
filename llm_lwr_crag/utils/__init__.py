@@ -3,6 +3,8 @@ from utils.download import download_repo
 from utils.logging import logger, setup_logger, toggle_logger
 from utils.path import path
 
+setup_logger()
+
 __all__ = [
     "parse_args",
     "download_repo",
