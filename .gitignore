@@ -1,5 +1,7 @@
 # Local dev utilities
 update_env.sh
+llm_lwr_crag/data/
+llm_lwr_crag/run.sh
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

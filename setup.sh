@@ -2,7 +2,8 @@
 
 # This script will set up the Conda environment and install the dependencies
 
-CONDA_ENV_NAME="llm_lwr_coderag_env"
+export PROJECT_NAME="llm_lwr_crag"
+CONDA_ENV_NAME="${PROJECT_NAME}_env"
 PYTHON_VERSION="3.11"
 
 # Check if the conda environment exists
@@ -26,3 +27,7 @@ else
 fi
 
 echo "Environment setup complete."
+
+# General environment variables
+export PROJECT_ROOT="${PWD}/${PROJECT_NAME}/"
+export DATA_DIR="${PROJECT_ROOT}/data/"
