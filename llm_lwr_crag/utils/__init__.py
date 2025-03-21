@@ -1,12 +1,13 @@
-from utils.argparse import parse_args
 from utils.download import download_repo
 from utils.logging import logger, setup_logger, toggle_logger
+from utils.parse import parse_args, parse_eval
 from utils.path import path
 
 setup_logger()
 
 __all__ = [
     "parse_args",
+    "parse_eval",
     "download_repo",
     "logger",
     "setup_logger",

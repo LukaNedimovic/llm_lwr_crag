@@ -15,15 +15,18 @@ SUPPORTED_RETRIEVER = ["hf"]
 
 DEFAULT_ARGS = Box(
     {
-        "db": {
-            "type": "chromadb",
-            "chromadb_path": "$DB_DIR",
-        },
         "retriever": {
-            "type": "hf",
-            "base_model": "all-MiniLM-L6-v2",
-            "device": "cuda",
-        },
+            "db": {
+                "type": "chromadb",
+                "chromadb_path": "$DB_DIR",
+                "collection_name": "default_collection",
+            },
+            "llm": {
+                "type": "hf",
+                "base_model": "all-MiniLM-L6-v2",
+                "device": "cuda",
+            },
+        }
     }
 )
 
@@ -32,11 +35,13 @@ REQUIRED_ARGS = Box(
         "mode": {
             "train": ["repo_url", "repo_dir", "eval_path"],
         },
-        "db": {
-            "type": {
-                "chromadb": ["chromadb_path"],
-            }
+        "retriever": {
+            "db": {
+                "type": {
+                    "chromadb": ["chromadb_path"],
+                }
+            },
+            "llm": {"type": {"hf": ["base_model", "device"]}},
         },
-        "retriever": {"type": {"hf": ["base_model", "device"]}},
     }
 )

@@ -3,8 +3,9 @@ import os
 from pathlib import Path
 from typing import Union
 
+import pandas as pd  # type: ignore
 import yaml
-from box import Box
+from box import Box  # type: ignore
 from pydantic import ValidationError
 
 from .config_validator import ConfigValidator
@@ -18,12 +19,19 @@ def is_yaml_file(file_path: Path) -> bool:
     Check whether file at the provided path is a YAML / YML file.
     """
     if not os.path.isfile(file_path):
-        print(file_path)
         return False
     _, extension = os.path.splitext(file_path)
-    if extension.lower() in [".yaml", ".yml"]:
-        return True
-    return False
+    return True if extension.lower() in [".yaml", ".yml"] else False
+
+
+def is_json_file(file_path: Path) -> bool:
+    """
+    Check whether file at the provided path is a JSON file.
+    """
+    if not os.path.isfile(file_path):
+        return False
+    _, extension = os.path.splitext(file_path)
+    return True if extension.lower() == ".json" else False
 
 
 def parse_config(path: Path) -> Union[None, Box]:
@@ -49,6 +57,10 @@ def parse_config(path: Path) -> Union[None, Box]:
         except ValidationError as e:
             print(f"Validation error: {e}")
             return None
+
+
+def parse_eval(path: Path) -> pd.DataFrame:
+    return pd.read_json(path) if is_json_file(path) else None
 
 
 def parse_args() -> Union[None, Box]:
