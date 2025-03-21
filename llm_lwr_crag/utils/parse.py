@@ -6,9 +6,9 @@ from typing import Union
 import pandas as pd  # type: ignore
 import yaml
 from box import Box  # type: ignore
+from config.config_validator import ConfigValidator
 from pydantic import ValidationError
 
-from .config_validator import ConfigValidator
 from .path import path
 
 __all__ = ["parse_args"]

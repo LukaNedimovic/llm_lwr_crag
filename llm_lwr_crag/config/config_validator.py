@@ -1,31 +1,32 @@
 from typing import Literal, Optional
 
 from pydantic import BaseModel, model_validator
+from utils.const import DEFAULT_ARGS, REQUIRED_ARGS
 
-from .const import DEFAULT_ARGS, REQUIRED_ARGS
 
-
-class RetrieverLLMConfig(BaseModel):
+class RetrieverChunkingConfig(BaseModel):
     """
-    LLM Retriever YAML configuration validator.
+    LLM Chunking YAML configuration validator.
     """
 
-    type: Literal["hf"] = DEFAULT_ARGS.retriever.llm.type  # type: ignore
+    type: Literal[
+        "RecursiveCharacterTextSplitter"
+    ] = DEFAULT_ARGS.retriever.chunking.type  # type: ignore
 
-    # Huggingface related arguments
-    base_model: Optional[str] = DEFAULT_ARGS.retriever.llm.base_model
-    device: Optional[str] = DEFAULT_ARGS.retriever.llm.device
+    # RecursiveCharacterTextSplitter related arguments
+    chunk_size: Optional[int] = DEFAULT_ARGS.retriever.chunking.chunk_size
+    chunk_overlap: Optional[int] = DEFAULT_ARGS.retriever.chunking.chunk_overlap
 
     @model_validator(mode="before")
     def check_required_properties(cls, values):
-        retriever_llm_type = values.get("type")
+        chunking_type = values.get("type")
 
-        for required_arg in REQUIRED_ARGS.retriever.llm.type[retriever_llm_type]:
+        for required_arg in REQUIRED_ARGS.retriever.chunking.type[chunking_type]:
             if not values.get(required_arg):
                 raise ValueError(
                     (
-                        f"`{required_arg}` is required when retriever is",
-                        f"`{retriever_llm_type}`",
+                        f"`{required_arg}` is required when chunking type is",
+                        f"`{chunking_type}`",
                     )
                 )
 
@@ -59,11 +60,39 @@ class RetrieverDBConfig(BaseModel):
         return values
 
 
+class RetrieverLLMConfig(BaseModel):
+    """
+    LLM Retriever YAML configuration validator.
+    """
+
+    type: Literal["hf"] = DEFAULT_ARGS.retriever.llm.type  # type: ignore
+
+    # Huggingface related arguments
+    base_model: Optional[str] = DEFAULT_ARGS.retriever.llm.base_model
+    device: Optional[str] = DEFAULT_ARGS.retriever.llm.device
+
+    @model_validator(mode="before")
+    def check_required_properties(cls, values):
+        retriever_llm_type = values.get("type")
+
+        for required_arg in REQUIRED_ARGS.retriever.llm.type[retriever_llm_type]:
+            if not values.get(required_arg):
+                raise ValueError(
+                    (
+                        f"`{required_arg}` is required when retriever is",
+                        f"`{retriever_llm_type}`",
+                    )
+                )
+
+        return values
+
+
 class RetrieverConfig(BaseModel):
     """
     Retriever YAML configuration validator.
     """
 
+    chunking: RetrieverChunkingConfig
     db: RetrieverDBConfig
     llm: RetrieverLLMConfig
 
@@ -80,6 +109,9 @@ class ConfigValidator(BaseModel):
     eval_path: Optional[str]
 
     retriever: RetrieverConfig
+
+    languages_path: Optional[str] = DEFAULT_ARGS.languages_path
+    extensions_path: Optional[str] = DEFAULT_ARGS.extensions_path
 
     @model_validator(mode="before")
     def check_required_properties(cls, values):

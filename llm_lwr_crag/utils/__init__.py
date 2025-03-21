@@ -1,4 +1,5 @@
 from utils.download import download_repo
+from utils.gen_extensions import gen_extensions
 from utils.logging import logger, setup_logger, toggle_logger
 from utils.parse import parse_args, parse_eval
 from utils.path import path
@@ -13,4 +14,5 @@ __all__ = [
     "setup_logger",
     "toggle_logger",
     "path",
+    "gen_extensions",
 ]

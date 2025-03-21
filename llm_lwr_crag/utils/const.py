@@ -16,6 +16,11 @@ SUPPORTED_RETRIEVER = ["hf"]
 DEFAULT_ARGS = Box(
     {
         "retriever": {
+            "chunking": {
+                "type": "RecursiveCharacterTextSplitter",
+                "chunk_size": 500,
+                "chunk_overlap": 50,
+            },
             "db": {
                 "type": "chromadb",
                 "chromadb_path": "$DB_DIR",
@@ -26,7 +31,9 @@ DEFAULT_ARGS = Box(
                 "base_model": "all-MiniLM-L6-v2",
                 "device": "cuda",
             },
-        }
+        },
+        "languages_path": "$DATA_DIR/languages.yml",
+        "extensions_path": "$DATA_DIR/extensions.txt",
     }
 )
 
@@ -36,6 +43,11 @@ REQUIRED_ARGS = Box(
             "train": ["repo_url", "repo_dir", "eval_path"],
         },
         "retriever": {
+            "chunking": {
+                "type": {
+                    "RecursiveCharacterTextSplitter": [],
+                },
+            },
             "db": {
                 "type": {
                     "chromadb": ["chromadb_path"],
