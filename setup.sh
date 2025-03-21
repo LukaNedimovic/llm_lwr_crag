@@ -32,5 +32,7 @@ echo "Environment setup complete."
 export PROJECT_ROOT=$PWD
 export SRC_ROOT="${PROJECT_ROOT}/${PROJECT_NAME}/"
 export DATA_DIR="${SRC_ROOT}/data/"
+export DB_DIR="${SRC_ROOT}/db/"
+export CONFIG_DIR="${SRC_ROOT}/config/"
 
 export PYTHONPATH=$SRC_ROOT
