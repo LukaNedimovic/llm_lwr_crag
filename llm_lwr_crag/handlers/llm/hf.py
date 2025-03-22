@@ -1,5 +1,6 @@
 from typing import List
 
+import numpy as np
 import progressbar
 import torch
 from data_processing import ChunkDict
@@ -20,7 +21,7 @@ class HF(AbstractLLM):
         self.device = "cuda" if args.device and torch.cuda.is_available() else "cpu"
         self.model = self.model.to(self.device)
 
-    def embed_text(self, text: str) -> torch.Tensor:
+    def embed_text(self, text: str) -> np.ndarray:
         inputs = self.tokenizer(
             text, return_tensors="pt", truncation=True, padding=True
         )
@@ -32,7 +33,6 @@ class HF(AbstractLLM):
         return embeddings.squeeze().detach().cpu().numpy()
 
     def embed_chunks(self, chunks: List[dict]) -> ChunkDict:
-        """Generate embeddings for a list of chunks (documents)."""
         texts = []
         embeddings = []
         metadata = []

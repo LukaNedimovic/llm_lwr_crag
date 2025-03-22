@@ -1,12 +1,14 @@
 from box import Box
 
 from .db import AbstractDB, ChromaDB
-from .llm import HF, AbstractLLM
+from .llm import HF, AbstractLLM, OpenAI
 
 NAME_TO_DB_TYPE = {"chromadb": ChromaDB}
+NAME_TO_LLM_TYPE = {"hf": HF, "openai": OpenAI}
 
 
 class AutoDB:
+
     @staticmethod
     def from_args(db_args: Box) -> AbstractDB:
         """
@@ -18,9 +20,6 @@ class AutoDB:
 
         db = db_class(db_args)
         return db
-
-
-NAME_TO_LLM_TYPE = {"hf": HF}
 
 
 class AutoLLM:

@@ -65,11 +65,17 @@ class RetrieverLLMConfig(BaseModel):
     LLM Retriever YAML configuration validator.
     """
 
-    type: Literal["hf"] = DEFAULT_ARGS.retriever.llm.type  # type: ignore
+    type: Literal["hf", "openai"] = DEFAULT_ARGS.retriever.llm.type  # type: ignore
 
     # Huggingface related arguments
     base_model: Optional[str] = DEFAULT_ARGS.retriever.llm.base_model
     device: Optional[str] = DEFAULT_ARGS.retriever.llm.device
+
+    # OpenAI related arguments
+    api_key: str
+    model: Optional[str] = DEFAULT_ARGS.retriever.llm.model
+    batch_size: Optional[int] = DEFAULT_ARGS.retriever.llm.batch_size
+    num_threads: Optional[int] = DEFAULT_ARGS.retriever.llm.num_threads
 
     @model_validator(mode="before")
     def check_required_properties(cls, values):
