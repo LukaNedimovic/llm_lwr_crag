@@ -21,7 +21,7 @@ class AbstractDBHandler(ABC):
         pass
 
     @abstractmethod
-    def query(self, query_embedding: Any, n_results: int) -> List[str]:
+    def query(self, query_embedding: Any, top_k: int) -> List[str]:
         """
         Query the database to retrieve the most similar documents.
         """

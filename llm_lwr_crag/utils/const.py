@@ -23,7 +23,7 @@ DEFAULT_ARGS = Box(
             },
             "db": {
                 "type": "chromadb",
-                "chromadb_path": "$DB_DIR/persist/chroma/",
+                "chromadb_path": "$PERSIST_DIR/chroma/",
                 "collection_name": "default_collection",
             },
             "llm": {

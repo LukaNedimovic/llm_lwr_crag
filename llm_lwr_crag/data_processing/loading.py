@@ -65,10 +65,11 @@ def load_documents(repo_dir: Path, extensions: List[str]) -> List[Document]:
                 ext = os.path.splitext(file)[1].lower()
 
                 if ext in extensions:
+                    rel_path = os.path.relpath(file_path, repo_dir)
                     text = extract_text(path(file_path))
                     if text:
                         documents.append(
-                            Document(page_content=text, metadata={"path": file_path})
+                            Document(page_content=text, metadata={"path": rel_path})
                         )
 
                 file_count += 1

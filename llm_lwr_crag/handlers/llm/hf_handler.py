@@ -28,7 +28,7 @@ class HFHandler(AbstractLLMHandler):
             outputs = self.model(**inputs)
         embeddings = outputs.last_hidden_state.mean(dim=1)
 
-        return embeddings.squeeze()
+        return embeddings.squeeze().detach().cpu().numpy()
 
     def embed_chunks(self, chunks: List[dict]) -> dict:
         """Generate embeddings for a list of chunks (documents)."""
@@ -55,7 +55,6 @@ class HFHandler(AbstractLLMHandler):
             source = chunk["source"]
 
             embedding = self.embed_text(text)
-            embedding = embedding.detach().cpu().numpy()
 
             chunk_id = f"{source}_{i}"
             embeddings.append(embedding)

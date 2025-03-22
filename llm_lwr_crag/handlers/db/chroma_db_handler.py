@@ -1,20 +1,26 @@
 from typing import Any, List
 
-from chromadb import Client
+from chromadb import PersistentClient
 from chromadb.config import Settings
+from utils.logging import logger
+from utils.path import path
 
 from .abstract_db_handler import AbstractDBHandler
 
 
 class ChromaDBHandler(AbstractDBHandler):
     def __init__(self, args):
-        self.client = Client(
-            Settings(
-                chroma_db_impl="duckdb+parquet",
-                persist_directory=args.chromadb_path,
-            )
+        self.client = PersistentClient(
+            path=str(path(args.chromadb_path)),
+            settings=Settings(allow_reset=True),
         )
+
         self.collection_name = args.collection_name
+        if self.collection_name in self.client.list_collections():
+            logger.info(
+                f"Collection '{self.collection_name}' already exists. Dropping it..."
+            )
+            self.client.delete_collection(self.collection_name)
 
         self.collection = self.client.create_collection(name=self.collection_name)
 
@@ -28,18 +34,22 @@ class ChromaDBHandler(AbstractDBHandler):
         """
         Store embeddings in the Chroma database.
         """
+        logger.info(f"Adding embeddings into the {self.collection_name} (ChromeDB)...")
         self.collection.add(
             documents=chunks, embeddings=embeddings, metadatas=metadata, ids=ids
         )
+        logger.info("Sucessfully added embeddings into the database!")
 
-    def query(self, query_embedding: Any, n_results: int = 10) -> List[str]:
+    def query(self, query_embedding: Any, top_k: int = 10) -> List[str]:
         """
-        Query the Chroma database with the given embedding.
+        Query the Chroma database for files.
         """
-        results = self.collection.query(
-            query_embeddings=[query_embedding], n_results=n_results
+        result = self.collection.query(
+            query_embeddings=[query_embedding], n_results=top_k
         )
-        return results["documents"]
+        result_metadatas = result["metadatas"][0]
+        sources = [metadata["source"] for metadata in result_metadatas]
+        return sources
 
     def delete_embeddings(self, ids: List[str]) -> None:
         """
