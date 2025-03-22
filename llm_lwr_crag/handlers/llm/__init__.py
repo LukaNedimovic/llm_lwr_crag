@@ -1,7 +1,7 @@
-from .abstract_llm_handler import AbstractLLMHandler
-from .hf_handler import HFHandler
+from .abstract_llm import AbstractLLM
+from .hf import HF
 
 __all__ = [
-    "AbstractLLMHandler",
-    "HFHandler",
+    "AbstractLLM",
+    "HF",
 ]

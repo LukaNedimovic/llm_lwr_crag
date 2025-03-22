@@ -4,10 +4,10 @@ import progressbar
 import torch
 from transformers import AutoModel, AutoTokenizer
 
-from .abstract_llm_handler import AbstractLLMHandler
+from .abstract_llm import AbstractLLM
 
 
-class HFHandler(AbstractLLMHandler):
+class HF(AbstractLLM):
     def __init__(self, args):
         self.base_model = args.base_model
 

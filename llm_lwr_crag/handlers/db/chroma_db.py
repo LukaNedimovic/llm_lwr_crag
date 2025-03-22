@@ -5,10 +5,10 @@ from chromadb.config import Settings
 from utils.logging import logger
 from utils.path import path
 
-from .abstract_db_handler import AbstractDBHandler
+from .abstract_db import AbstractDB
 
 
-class ChromaDBHandler(AbstractDBHandler):
+class ChromaDB(AbstractDB):
     def __init__(self, args):
         self.client = PersistentClient(
             path=str(path(args.chromadb_path)),

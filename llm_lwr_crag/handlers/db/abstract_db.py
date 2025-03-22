@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Any, List
 
 
-class AbstractDBHandler(ABC):
+class AbstractDB(ABC):
     """
     Abstract handler class for seamless integration with various databases.
     """

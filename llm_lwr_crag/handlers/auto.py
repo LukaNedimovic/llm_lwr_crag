@@ -1,20 +1,14 @@
 from box import Box
 
-from .db import AbstractDBHandler, ChromaDBHandler
-from .llm import AbstractLLMHandler, HFHandler
+from .db import AbstractDB, ChromaDB
+from .llm import HF, AbstractLLM
 
-NAME_TO_DB_TYPE = {
-    "chromadb": ChromaDBHandler,
-}
-
-NAME_TO_LLM_TYPE = {
-    "hf": HFHandler,
-}
+NAME_TO_DB_TYPE = {"chromadb": ChromaDB}
 
 
-class HandlerFactory:
+class AutoDB:
     @staticmethod
-    def get_db_handler(db_args: Box) -> AbstractDBHandler:
+    def from_args(db_args: Box) -> AbstractDB:
         """
         Factory method to return the appropriate database handler.
         """
@@ -25,8 +19,13 @@ class HandlerFactory:
         db = db_class(db_args)
         return db
 
+
+NAME_TO_LLM_TYPE = {"hf": HF}
+
+
+class AutoLLM:
     @staticmethod
-    def get_llm_handler(llm_args: Box) -> AbstractLLMHandler:
+    def from_args(llm_args: Box) -> AbstractLLM:
         """
         Factory method to return the appropriate LLM handler.
         """

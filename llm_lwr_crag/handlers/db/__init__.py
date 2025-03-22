@@ -1,7 +1,7 @@
-from .abstract_db_handler import AbstractDBHandler
-from .chroma_db_handler import ChromaDBHandler
+from .abstract_db import AbstractDB
+from .chroma_db import ChromaDB
 
 __all__ = [
-    "AbstractDBHandler",
-    "ChromaDBHandler",
+    "AbstractDB",
+    "ChromaDB",
 ]
