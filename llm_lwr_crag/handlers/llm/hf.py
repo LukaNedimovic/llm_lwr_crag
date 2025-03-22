@@ -2,6 +2,7 @@ from typing import List
 
 import progressbar
 import torch
+from data_processing import ChunkDict
 from transformers import AutoModel, AutoTokenizer
 
 from .abstract_llm import AbstractLLM
@@ -30,8 +31,9 @@ class HF(AbstractLLM):
 
         return embeddings.squeeze().detach().cpu().numpy()
 
-    def embed_chunks(self, chunks: List[dict]) -> dict:
+    def embed_chunks(self, chunks: List[dict]) -> ChunkDict:
         """Generate embeddings for a list of chunks (documents)."""
+        texts = []
         embeddings = []
         metadata = []
         ids = []
@@ -57,6 +59,7 @@ class HF(AbstractLLM):
             embedding = self.embed_text(text)
 
             chunk_id = f"{source}_{i}"
+            texts.append(text)
             embeddings.append(embedding)
             metadata.append({"source": source, "chunk_index": i})
             ids.append(chunk_id)
@@ -64,8 +67,9 @@ class HF(AbstractLLM):
             bar.update(i + 1)
         bar.finish()
 
-        return {
-            "embeddings": embeddings,
-            "metadata": metadata,
-            "ids": ids,
-        }
+        return ChunkDict(
+            texts=texts,
+            embeddings=embeddings,
+            metadatas=metadata,
+            ids=ids,
+        )

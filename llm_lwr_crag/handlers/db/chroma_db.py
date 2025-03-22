@@ -24,19 +24,16 @@ class ChromaDB(AbstractDB):
 
         self.collection = self.client.create_collection(name=self.collection_name)
 
-    def store_embeddings(
-        self,
-        chunks: List[str],
-        embeddings: List[Any],
-        metadata: List[dict],
-        ids: List[str],
-    ) -> None:
+    def store_embeddings(self, chunks_data: dict) -> None:
         """
         Store embeddings in the Chroma database.
         """
         logger.info(f"Adding embeddings into the {self.collection_name} (ChromeDB)...")
         self.collection.add(
-            documents=chunks, embeddings=embeddings, metadatas=metadata, ids=ids
+            documents=chunks_data["texts"],
+            embeddings=chunks_data["embeddings"],
+            metadatas=chunks_data["metadatas"],
+            ids=chunks_data["ids"],
         )
         logger.info("Sucessfully added embeddings into the database!")
 

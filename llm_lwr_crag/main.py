@@ -34,7 +34,7 @@ def eval(
         retrieved_files = ret_db.query(question, top_k=k)
         retrieved_files = set(retrieved_files)
 
-        # Calculate Recall@K for this question
+        # Calculate Recall@K for the question
         ground_truth_files = set(row["files"])
         relevant_retrieved = ground_truth_files.intersection(retrieved_files)
         recall = (
@@ -69,19 +69,15 @@ def train(args: Box):
     text_chunker = make_text_chunker(args.retriever.chunking.type, args)
     chunks = chunk_documents(documents, text_chunker)
 
-    # LLM used for embedding the chunks and Database initialization
+    # LLM used for embedding the chunks and database initialization
     ret_llm = AutoLLM.from_args(args.retriever.llm)
     ret_db = AutoDB.from_args(args.retriever.db)
 
-    chunks_embedding_data = ret_llm.embed_chunks(chunks)
-    chunks_text = [chunk["text"] for chunk in chunks]
-    ret_db.store_embeddings(
-        chunks_text,
-        chunks_embedding_data["embeddings"],
-        chunks_embedding_data["metadata"],
-        chunks_embedding_data["ids"],
-    )
+    # Embed the chunks and store them in the database
+    chunks_data = ret_llm.embed_chunks(chunks)
+    ret_db.store_embeddings(chunks_data)
 
+    # Evaluate the dataset
     avg_recall = eval(ret_llm, ret_db, eval_df)
     print(f"{avg_recall * 100:.2f}")
 

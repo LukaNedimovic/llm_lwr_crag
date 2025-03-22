@@ -8,13 +8,7 @@ class AbstractDB(ABC):
     """
 
     @abstractmethod
-    def store_embeddings(
-        self,
-        chunks: List[str],
-        embeddings: List[Any],
-        metadata: List[dict],
-        ids: List[str],
-    ) -> None:
+    def store_embeddings(self, chunks_data: dict) -> None:
         """
         Store embeddings in the database.
         """
