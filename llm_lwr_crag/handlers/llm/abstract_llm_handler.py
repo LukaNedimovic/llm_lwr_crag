@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import Any, List
+from typing import List
 
 
 class AbstractLLMHandler(ABC):
     @abstractmethod
-    def create_embeddings(self, documents: List[str]) -> List[Any]:
-        """Generate embeddings for a list of documents."""
+    def embed_chunks(self, chunks: List[dict]) -> dict:
+        """Generate embeddings for a list of chunks (documents)."""
         pass

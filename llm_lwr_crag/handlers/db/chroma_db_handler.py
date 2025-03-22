@@ -1,20 +1,26 @@
 from typing import Any, List
 
-import chromadb
+from chromadb import Client
+from chromadb.config import Settings
 
 from .abstract_db_handler import AbstractDBHandler
 
 
 class ChromaDBHandler(AbstractDBHandler):
-    def __init__(self, **kwargs):
-        self.client = chromadb.Client()
-        self.collection = self.client.create_collection(
-            name=kwargs.get("collection_name", "default_collection")
+    def __init__(self, args):
+        self.client = Client(
+            Settings(
+                chroma_db_impl="duckdb+parquet",
+                persist_directory=args.chromadb_path,
+            )
         )
+        self.collection_name = args.collection_name
+
+        self.collection = self.client.create_collection(name=self.collection_name)
 
     def store_embeddings(
         self,
-        documents: List[str],
+        chunks: List[str],
         embeddings: List[Any],
         metadata: List[dict],
         ids: List[str],
@@ -23,7 +29,7 @@ class ChromaDBHandler(AbstractDBHandler):
         Store embeddings in the Chroma database.
         """
         self.collection.add(
-            documents=documents, embeddings=embeddings, metadatas=metadata, ids=ids
+            documents=chunks, embeddings=embeddings, metadatas=metadata, ids=ids
         )
 
     def query(self, query_embedding: Any, n_results: int = 10) -> List[str]:

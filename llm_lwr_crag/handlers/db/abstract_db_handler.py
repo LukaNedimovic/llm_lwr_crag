@@ -10,7 +10,7 @@ class AbstractDBHandler(ABC):
     @abstractmethod
     def store_embeddings(
         self,
-        documents: List[str],
+        chunks: List[str],
         embeddings: List[Any],
         metadata: List[dict],
         ids: List[str],

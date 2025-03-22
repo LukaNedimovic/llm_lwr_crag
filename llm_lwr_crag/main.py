@@ -19,16 +19,19 @@ def train(args: Box):
     )
     documents = load_documents(path(args.repo_dir), extensions)
     text_chunker = make_text_chunker(args.retriever.chunking.type, args)
-    chunks = chunk_documents(documents, text_chunker)  # noqa: F841
+    chunks = chunk_documents(documents, text_chunker)
 
-    # Database and LLM used for embedding the chunks
-    ret_db = HandlerFactory.get_db_handler(  # noqa: F841
-        args.retriever.db.type,
-        **(args.to_dict()),
-    )
-    ret_llm = HandlerFactory.get_llm_handler(  # noqa: F841
-        args.retriever.llm.type,
-        **(args.to_dict()),
+    # LLM used for embedding the chunks and Database initialization
+    ret_llm = HandlerFactory.get_llm_handler(args.retriever.llm)
+    ret_db = HandlerFactory.get_db_handler(args.retriever.db)
+
+    chunks_embedding_data = ret_llm.embed_chunks(chunks)
+    chunks_text = [chunk["text"] for chunk in chunks]
+    ret_db.store_embeddings(
+        chunks=chunks_text,
+        embeddings=chunks_embedding_data["embeddings"],
+        metadata=chunks_embedding_data["metadata"],
+        ids=chunks_embedding_data["ids"],
     )
 
 

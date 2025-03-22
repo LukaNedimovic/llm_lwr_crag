@@ -23,12 +23,12 @@ DEFAULT_ARGS = Box(
             },
             "db": {
                 "type": "chromadb",
-                "chromadb_path": "$DB_DIR",
+                "chromadb_path": "$DB_DIR/persist/chroma/",
                 "collection_name": "default_collection",
             },
             "llm": {
                 "type": "hf",
-                "base_model": "all-MiniLM-L6-v2",
+                "base_model": "sentence-transformers/all-MiniLM-L6-v2",
                 "device": "cuda",
             },
         },
