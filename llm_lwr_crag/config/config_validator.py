@@ -72,8 +72,8 @@ class RetrieverLLMConfig(BaseModel):
     device: Optional[str] = DEFAULT_ARGS.retriever.llm.device
 
     # OpenAI related arguments
-    api_key: str
-    model: Optional[str] = DEFAULT_ARGS.retriever.llm.model
+    api_key: Optional[str] = DEFAULT_ARGS.retriever.llm.api_key
+    model_name: Optional[str] = DEFAULT_ARGS.retriever.llm.model_name
     batch_size: Optional[int] = DEFAULT_ARGS.retriever.llm.batch_size
     num_threads: Optional[int] = DEFAULT_ARGS.retriever.llm.num_threads
 

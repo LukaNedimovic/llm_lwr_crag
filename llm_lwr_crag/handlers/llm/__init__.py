@@ -1,5 +1,5 @@
 from .abstract_llm import AbstractLLM
-from .hf import HF
-from .openai import OpenAI
+from .hf_handler import HFHandler
+from .openai_handler import OpenAIHandler
 
-__all__ = ["AbstractLLM", "HF", "OpenAI"]
+__all__ = ["AbstractLLM", "HFHandler", "OpenAIHandler"]

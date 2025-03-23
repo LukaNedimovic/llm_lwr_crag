@@ -79,7 +79,20 @@ def rem_std_nonextensbile(extensions: Set[str]):
     Args:
         extensions (List[str]): List of extensions to remove from.
     """
-    non_extensions = {".png", ".jpg", ".gif", ".exe", ".dll", ".so", ".zip", ".tar.gz"}
+    non_extensions = {
+        ".png",
+        ".jpg",
+        ".gif",
+        ".exe",
+        ".dll",
+        ".so",
+        ".zip",
+        ".tar.gz",
+        ".txt",
+        ".md",
+        ".1",
+        ".log",
+    }
     extensions -= non_extensions
 
 

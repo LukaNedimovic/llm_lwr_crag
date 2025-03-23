@@ -32,7 +32,8 @@ DEFAULT_ARGS = Box(
                 "base_model": "sentence-transformers/all-MiniLM-L6-v2",
                 "device": "cuda",
                 # OpenAI
-                "model": "text-embedding-ada-002",
+                "api_key": "your-openai-api-key",
+                "model_name": "text-embedding-ada-002",
                 "batch_size": 16,
                 "num_threads": 12,
             },
@@ -61,7 +62,7 @@ REQUIRED_ARGS = Box(
             "llm": {
                 "type": {
                     "hf": ["base_model", "device"],
-                    "openai": ["api_key", "model"],
+                    "openai": ["api_key", "model_name"],
                 },
             },
         },

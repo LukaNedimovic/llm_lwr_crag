@@ -8,7 +8,7 @@ from utils.path import path
 from .abstract_db import AbstractDB
 
 
-class ChromaDB(AbstractDB):
+class ChromaDBHandler(AbstractDB):
     def __init__(self, args):
         self.client = PersistentClient(
             path=str(path(args.chromadb_path)),

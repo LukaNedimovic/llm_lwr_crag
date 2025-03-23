@@ -4,33 +4,23 @@ import numpy as np
 import progressbar
 import torch
 from data_processing import ChunkDict
-from transformers import AutoModel, AutoTokenizer
+from langchain_huggingface import HuggingFaceEmbeddings
 
 from .abstract_llm import AbstractLLM
 
 
-class HF(AbstractLLM):
+class HFHandler(AbstractLLM):
     def __init__(self, args):
         self.base_model = args.base_model
 
-        # Set up tokenizer and model itself
-        self.tokenizer = AutoTokenizer.from_pretrained(self.base_model)
-        self.model = AutoModel.from_pretrained(self.base_model)
-
-        # Move model to adequate device
         self.device = "cuda" if args.device and torch.cuda.is_available() else "cpu"
-        self.model = self.model.to(self.device)
+        self.model = HuggingFaceEmbeddings(
+            model_name=self.base_model,
+            model_kwargs={"device": self.device},
+        )
 
     def embed_text(self, text: str) -> np.ndarray:
-        inputs = self.tokenizer(
-            text, return_tensors="pt", truncation=True, padding=True
-        )
-        inputs = {key: value.to(self.device) for key, value in inputs.items()}
-        with torch.no_grad():
-            outputs = self.model(**inputs)
-        embeddings = outputs.last_hidden_state.mean(dim=1)
-
-        return embeddings.squeeze().detach().cpu().numpy()
+        return np.array(self.model.embed_query(text), dtype=np.float32)
 
     def embed_chunks(self, chunks: List[dict]) -> ChunkDict:
         texts = []
