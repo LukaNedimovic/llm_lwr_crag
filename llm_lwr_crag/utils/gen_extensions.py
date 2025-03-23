@@ -66,6 +66,14 @@ def add_std_additional_extensible(extensions: Set[str]):
         ".rst",
         ".txt",
         ".adoc",
+        ".npmrc",
+        ".nvmdrc",
+        ".CN",
+        ".json",
+        ".md",
+        ".csv",
+        ".xml",
+        "",  # For files like LICENSE
     }
     extensions.update(additional_extensions)
 
@@ -88,10 +96,10 @@ def rem_std_nonextensbile(extensions: Set[str]):
         ".so",
         ".zip",
         ".tar.gz",
-        ".txt",
-        ".md",
-        ".1",
         ".log",
+        ".cmd",
+        ".bat",
+        ".vbs",
     }
     extensions -= non_extensions
 

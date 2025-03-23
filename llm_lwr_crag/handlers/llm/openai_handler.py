@@ -48,13 +48,13 @@ class OpenAIHandler(AbstractLLM):
             )
         ]
 
-    def embed_chunks(self, chunks: List[dict]) -> ChunkDict:
+    def embed_chunks(self, chunks: List[Document]) -> ChunkDict:
         texts = []
         embeddings = []
         metadata = []
         ids = []
 
-        chunk_texts = [chunk["text"] for chunk in chunks]
+        chunk_texts = [chunk.page_content for chunk in chunks]
         text_batches = [
             chunk_texts[i : i + self.batch_size]  # noqa: E203
             for i in range(0, len(chunk_texts), self.batch_size)
@@ -84,10 +84,12 @@ class OpenAIHandler(AbstractLLM):
             for embedding in batch:
                 chunk = chunks[index]
 
-                texts.append(chunk["text"])
+                texts.append(chunk.page_content)
                 embeddings.append(embedding)
-                metadata.append({"source": chunk["source"], "chunk_index": index})
-                ids.append(f"{chunk['source']}_{index}")
+                metadata.append(
+                    {"source": chunk.metadata["source"], "chunk_index": index}
+                )
+                ids.append(f"{chunk.metadata['source']}_{index}")
 
                 bar.update(index + 1)
                 index += 1

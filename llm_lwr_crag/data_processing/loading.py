@@ -5,7 +5,6 @@ from typing import List, Union
 import progressbar
 from langchain.schema import Document
 from unstructured.partition.auto import partition
-from utils.logging import logger
 from utils.path import path
 
 
@@ -23,8 +22,7 @@ def extract_text(file_path: Path) -> Union[str, None]:
     try:
         elements = partition(str(file_path))
         return "\n".join([str(el) for el in elements])
-    except Exception as e:
-        logger.info(f"Error extracting text from {file_path}: {e}")
+    except:  # noqa: E722
         return None
 
 
@@ -62,16 +60,16 @@ def load_documents(repo_dir: Path, extensions: List[str]) -> List[Document]:
         for root, _, files in os.walk(repo_dir):
             for file in files:
                 file_path = os.path.join(root, file)
-                ext = os.path.splitext(file)[1].lower()
+                ext = os.path.splitext(file)[1]
 
                 if ext in extensions:
                     rel_path = os.path.relpath(file_path, repo_dir)
+
                     text = extract_text(path(file_path))
                     if text:
                         documents.append(
                             Document(page_content=text, metadata={"path": rel_path})
                         )
-
                 file_count += 1
                 bar.update(file_count)
 

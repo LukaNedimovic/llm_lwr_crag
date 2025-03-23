@@ -23,7 +23,7 @@ class HFHandler(AbstractLLM):
     def embed_text(self, text: str) -> np.ndarray:
         return np.array(self.model.embed_query(text), dtype=np.float32)
 
-    def embed_chunks(self, chunks: List[dict]) -> ChunkDict:
+    def embed_chunks(self, chunks: List[Document]) -> ChunkDict:
         texts = []
         embeddings = []
         metadata = []
@@ -44,8 +44,8 @@ class HFHandler(AbstractLLM):
 
         # Generate embeddings for each chunk
         for i, chunk in enumerate(chunks):
-            text = chunk["text"]
-            source = chunk["source"]
+            text = chunk.page_content
+            source = chunk.metadata["source"]
 
             embedding = self.embed_text(text)
 

@@ -52,7 +52,7 @@ def eval(
 
         for gnd, ret in zip_longest(ground_truth_files, retrieved_files, fillvalue=""):
             print(f"{str(gnd):<80} {str(ret)}")
-        print("Common: ", len(relevant_retrieved))
+        print("Common: ", len(relevant_retrieved), recall)
 
     # Average Recall@K across all questions
     avg_recall = total_recall / len(eval_df)
@@ -61,7 +61,7 @@ def eval(
 
 def train(args: Box):
     # Download GitHub repository and parse the evaluation data
-    download_repo(args.repo_url, path(args.repo_dir))
+    download_repo(args.repo_url, path(args.repo_dir), force_download=False)
     eval_df = parse_eval(path(args.eval_path))  # noqa: F841
 
     # Set up retrieval pipeline
@@ -69,11 +69,12 @@ def train(args: Box):
     extensions = gen_extensions(
         path(args.languages_path),
         extensions_path=path(args.extensions_path),
+        force=True,
     )
     documents = load_documents(path(args.repo_dir), extensions)
-    add_document_metadata(documents, args.retriever.metadata)
     text_chunker = make_text_chunker(args.retriever.chunking)
     chunks = chunk_documents(documents, text_chunker)
+    add_document_metadata(chunks, args.retriever.metadata)
 
     # LLM used for embedding the chunks and database initialization
     ret_llm = AutoLLM.from_args(args.retriever.llm)

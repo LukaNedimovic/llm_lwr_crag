@@ -20,7 +20,7 @@ class AbstractLLM(ABC):
         pass
 
     @abstractmethod
-    def embed_chunks(self, chunks: List[dict]) -> ChunkDict:
+    def embed_chunks(self, chunks: List[Document]) -> ChunkDict:
         """
         Generate embeddings for a list of chunks (documents).
         """

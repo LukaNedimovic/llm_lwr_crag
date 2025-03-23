@@ -25,7 +25,7 @@ def gen_summaries(documents: list[Document], metadata_args: Box) -> None:
         document.page_content = (
             f"LLM Summary: {document.metadata['llm_summary']}"
             "\n\n"
-            "Content: {document.page_content}"
+            f"Content: {document.page_content}"
         )
         document.metadata.pop("llm_summary", None)
 

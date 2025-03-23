@@ -42,7 +42,12 @@ def chunk_documents(documents: List[Document], text_chunker) -> List[dict]:
             for i, doc in enumerate(documents):
                 splits = text_chunker.split_text(doc.page_content)
                 for split in splits:
-                    all_chunks.append({"text": split, "source": doc.metadata["path"]})
+                    all_chunks.append(
+                        Document(
+                            page_content=split,
+                            metadata={"source": doc.metadata["path"]},
+                        )
+                    )
 
                 bar.update(i + 1)
 

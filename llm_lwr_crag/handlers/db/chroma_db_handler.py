@@ -42,11 +42,17 @@ class ChromaDBHandler(AbstractDB):
         Query the Chroma database for files.
         """
         result = self.collection.query(
-            query_embeddings=[query_embedding], n_results=top_k
+            query_embeddings=[query_embedding],
+            n_results=top_k * 2,
+            include=["metadatas", "distances"],  # Include distances in the result
         )
         result_metadatas = result["metadatas"][0]
-        sources = [metadata["source"] for metadata in result_metadatas]
-        return sources
+        result_distances = result["distances"][0]
+        metadata_distance_pairs = list(zip(result_metadatas, result_distances))
+        metadata_distance_pairs.sort(key=lambda x: x[1])
+        sorted_sources = [metadata["source"] for metadata, _ in metadata_distance_pairs]
+
+        return sorted_sources[:top_k]
 
     def delete_embeddings(self, ids: List[str]) -> None:
         """
