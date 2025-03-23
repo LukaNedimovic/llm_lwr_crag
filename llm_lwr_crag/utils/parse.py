@@ -34,6 +34,16 @@ def is_json_file(file_path: Path) -> bool:
     return True if extension.lower() == ".json" else False
 
 
+def is_txt_file(file_path: Path) -> bool:
+    """
+    Check whether file at the provided path is a TXT file.
+    """
+    if not os.path.isfile(file_path):
+        return False
+    _, extension = os.path.splitext(file_path)
+    return True if extension.lower() == ".txt" else False
+
+
 def parse_config(path: Path) -> Union[None, Box]:
     """
     Parse configuration YAML file.
@@ -57,6 +67,22 @@ def parse_config(path: Path) -> Union[None, Box]:
         except ValidationError as e:
             print(f"Validation error: {e}")
             return None
+
+
+def parse_txt(path: Path) -> Union[None, str]:
+    """
+    Parse a standard TXT file into a string.
+
+    Args:
+        path (Path): Path to TXT file to parse.
+
+    Returns:
+        Content of provided TXT file as a single string.
+    """
+    if not is_txt_file(path):
+        return None
+    with open(path, "r", encoding="utf-8") as file:
+        return file.read()
 
 
 def parse_eval(path: Path) -> pd.DataFrame:

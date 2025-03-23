@@ -35,5 +35,6 @@ export DATA_DIR="${SRC_ROOT}/data/"
 export DB_DIR="${SRC_ROOT}/db/"
 export CONFIG_DIR="${SRC_ROOT}/config/"
 export PERSIST_DIR="${SRC_ROOT}/persist/"
+export PROMPTS_DIR="${SRC_ROOT}/prompts/"
 
 export PYTHONPATH=$SRC_ROOT

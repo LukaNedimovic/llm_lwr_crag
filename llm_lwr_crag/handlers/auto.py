@@ -13,9 +13,9 @@ class AutoDB:
         """
         Factory method to return the appropriate database handler.
         """
-        db_class = NAME_TO_DB_TYPE.get(db_args.type, None)
+        db_class = NAME_TO_DB_TYPE.get(db_args.provider, None)
         if db_class is None:
-            raise ValueError(f"Database type {db_args.type} is not supported.")
+            raise ValueError(f"Database type {db_args.provider} is not supported.")
 
         db = db_class(db_args)
         return db
@@ -27,9 +27,9 @@ class AutoLLM:
         """
         Factory method to return the appropriate LLM handler.
         """
-        llm_class = NAME_TO_LLM_TYPE.get(llm_args.type, None)
+        llm_class = NAME_TO_LLM_TYPE.get(llm_args.provider, None)
         if llm_class is None:
-            raise ValueError(f"LLM type {llm_args.type} is not supported.")
+            raise ValueError(f"LLM type {llm_args.provider} is not supported.")
 
         llm = llm_class(llm_args)
         return llm

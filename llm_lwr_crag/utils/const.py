@@ -6,6 +6,7 @@ __all__ = [
     "SUPPORTED_RETRIEVER_LLM",
     "DEFAULT_ARGS",
     "REQUIRED_ARGS",
+    "LLM_SUMMARY_REQUIRED",
 ]
 
 SUPPORTED_MODE = ["train"]
@@ -15,19 +16,25 @@ SUPPORTED_RETRIEVER_LLM = ["hf", "openai"]
 DEFAULT_ARGS = Box(
     {
         "retriever": {
+            "metadata": {
+                "list": [],
+                "llm_summary": None,
+            },
             "chunking": {
                 "type": "RecursiveCharacterTextSplitter",
+                "metadata": [],
                 "chunk_size": 500,
                 "chunk_overlap": 50,
+                "llm_setup": None,
             },
             "db": {
                 # ChromaDB
-                "type": "chromadb",
+                "provider": "chromadb",
                 "chromadb_path": "$PERSIST_DIR/chroma/",
                 "collection_name": "default_collection",
             },
             "llm": {
-                "type": "hf",
+                "provider": "hf",
                 # Huggingface
                 "base_model": "sentence-transformers/all-MiniLM-L6-v2",
                 "device": "cuda",
@@ -36,6 +43,10 @@ DEFAULT_ARGS = Box(
                 "model_name": "text-embedding-ada-002",
                 "batch_size": 16,
                 "num_threads": 12,
+                "use_case": "embedding",
+                "split_text_system_msg": "$PROMPTS_DIR/split_text_sys_default.txt",
+                "split_text_human_msg": "$PROMPTS_DIR/split_text_hmn_default.txt",
+                "summarize_msg": "$PROMPTS_DIR/summarize_msg.txt",
             },
         },
         "languages_path": "$DATA_DIR/languages.yml",
@@ -52,15 +63,16 @@ REQUIRED_ARGS = Box(
             "chunking": {
                 "type": {
                     "RecursiveCharacterTextSplitter": [],
+                    "LLMChunking": ["llm_setup"],
                 },
             },
             "db": {
-                "type": {
+                "provider": {
                     "chromadb": ["chromadb_path"],
                 }
             },
             "llm": {
-                "type": {
+                "provider": {
                     "hf": ["base_model", "device"],
                     "openai": ["api_key", "model_name"],
                 },
@@ -68,3 +80,5 @@ REQUIRED_ARGS = Box(
         },
     }
 )
+
+LLM_SUMMARY_REQUIRED = ["llm_summary"]

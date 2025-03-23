@@ -4,7 +4,12 @@ from itertools import zip_longest
 
 import pandas as pd
 from box import Box  # type: ignore
-from data_processing import chunk_documents, load_documents, make_text_chunker
+from data_processing import (
+    add_document_metadata,
+    chunk_documents,
+    load_documents,
+    make_text_chunker,
+)
 from handlers.auto import AbstractDB, AbstractLLM, AutoDB, AutoLLM
 from utils import download_repo, gen_extensions, parse_args, parse_eval, path
 
@@ -66,7 +71,8 @@ def train(args: Box):
         extensions_path=path(args.extensions_path),
     )
     documents = load_documents(path(args.repo_dir), extensions)
-    text_chunker = make_text_chunker(args.retriever.chunking.type, args)
+    add_document_metadata(documents, args.retriever.metadata)
+    text_chunker = make_text_chunker(args.retriever.chunking)
     chunks = chunk_documents(documents, text_chunker)
 
     # LLM used for embedding the chunks and database initialization

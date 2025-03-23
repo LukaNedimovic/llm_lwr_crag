@@ -1,0 +1,11 @@
+Please split the following document into structured sections.
+Return the result in JSON format as follows:
+{{
+    "chunks": [
+        {{
+            "title": "Title of section",
+            "content": "Content of the section"
+        }},
+        ...
+    ]
+}}

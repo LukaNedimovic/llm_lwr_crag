@@ -3,7 +3,7 @@ update_env.sh
 
 llm_lwr_crag/data/
 llm_lwr_crag/run.sh
-llm_lwr_crag/config/config_example.yaml
+llm_lwr_crag/config/config_*.yaml
 
 llm_lwr_crag/persist/
 

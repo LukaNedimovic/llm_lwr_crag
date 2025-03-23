@@ -1,0 +1,11 @@
+You are a skilled software developer. Your task is to summarize the following code in a clear and concise manner.
+The summarization you create will be added to the document metadata, and used for a retrieval task (in RAG).
+
+Focus on the following aspects:
+1. **Purpose**: What is the main goal or functionality of the code?
+2. **Key Components**: What are the main functions, classes, or modules?
+3. **Input/Output**: What does the code take as input, and what does it produce as output?
+4. **Dependencies**: Are there any notable libraries, frameworks, or external dependencies?
+5. **Complexity**: Is the code simple, moderate, or complex? Mention any notable algorithms or logic.
+
+Provide the summary in plain text, avoiding unnecessary details or explanations. Do not include the code itself in the output.

@@ -1,9 +1,10 @@
-from typing import List
+from typing import List, Optional
 
 import numpy as np
 import progressbar
 import torch
 from data_processing import ChunkDict
+from langchain.schema import Document
 from langchain_huggingface import HuggingFaceEmbeddings
 
 from .abstract_llm import AbstractLLM
@@ -63,3 +64,21 @@ class HFHandler(AbstractLLM):
             metadatas=metadata,
             ids=ids,
         )
+
+    def split_text(self, text: str) -> Optional[ChunkDict]:
+        """
+        Chunk given text using a LLM.
+        """
+        pass
+
+    def gen_summary(self, text: str) -> Optional[str]:
+        """
+        Generate LLM summary for the given content.
+        """
+        pass
+
+    def gen_summaries(self, documents: List[Document]):
+        """
+        Generate LLM summary for the given content.
+        """
+        pass
