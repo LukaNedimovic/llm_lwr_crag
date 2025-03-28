@@ -245,6 +245,7 @@ dependencies:
       - python-oxmsg==0.0.2
       - python-utils==3.9.1
       - pytz==2025.1
+      - rank-bm25==0.2.2
       - rapidfuzz==3.12.2
       - regex==2024.11.6
       - requests-oauthlib==2.0.0
