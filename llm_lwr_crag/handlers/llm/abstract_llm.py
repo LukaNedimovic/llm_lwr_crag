@@ -89,3 +89,6 @@ class AbstractLLM(ABC):
 
         response = self.model.invoke(prompt)
         return response.content.strip()
+
+    def __call__(self, text):
+        return self.embed_query(text)

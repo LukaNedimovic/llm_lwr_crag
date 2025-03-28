@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from collections import defaultdict
 from typing import List, Set, Tuple
 
@@ -10,20 +10,18 @@ class AbstractDB(ABC):
     Abstract handler class for seamless integration with various databases.
     """
 
-    @abstractmethod
     def add_documents(self, chunks: List[Document]) -> None:
         """
         Store embeddings in the Chroma database.
         """
         pass
 
-    @abstractmethod
     def query(self, query: str, k: int = 10) -> List[Tuple[str, float]]:
         """
         Query the Chroma database for files.
         This modified version returns both the file paths and their similarity scores.
         """
-        pass
+        return []
 
     def filter_by_fp(self, ret_chunks, top_k: int = 10) -> List[str]:
         ret_files: Set[str] = set()

@@ -117,11 +117,13 @@ class RetrieverDBConfig(BaseModel):
     Retriever (DB) YAML configuration validator.
     """
 
-    provider: Literal["chromadb"] = DEFAULT_ARGS.retriever.db.provider  # type: ignore
+    provider: Literal["chromadb", "faiss"] = DEFAULT_ARGS.retriever.db.provider  # type: ignore  # noqa: E501
+    collection_name: Optional[str] = DEFAULT_ARGS.retriever.db.collection_name
 
     # ChromaDB related arguments
     chromadb_path: Optional[str] = DEFAULT_ARGS.retriever.db.chromadb_path
-    collection_name: Optional[str] = DEFAULT_ARGS.retriever.db.collection_name
+    # FAISS related arguments
+    faiss_path: Optional[str] = DEFAULT_ARGS.retriever.db.faiss_path
 
     @model_validator(mode="before")
     def check_required_properties(cls, values):

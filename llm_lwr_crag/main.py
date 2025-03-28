@@ -129,6 +129,7 @@ def train(args: Box) -> None:
         force=True,
     )
     docs = load_docs(path(args.repo_dir), extensions, args.retriever.metadata)
+    docs = docs[:10]
     text_chunker = make_text_chunker(args.retriever.chunking)
     chunks = chunk_docs(docs, text_chunker)
 
