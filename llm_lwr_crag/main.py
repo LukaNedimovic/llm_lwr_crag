@@ -11,6 +11,9 @@ from data_processing import (
     make_text_chunker,
 )
 from handlers.auto import AbstractDB, AutoDB, AutoLLM
+
+# Turn off Langchain verbose mode
+from langchain.globals import get_verbose, set_verbose
 from utils import (
     download_repo,
     gen_extensions,
@@ -19,6 +22,9 @@ from utils import (
     parse_eval,
     path,
 )
+
+set_verbose(False)
+is_verbose = get_verbose()
 
 
 def eval(
