@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import Set
 
 import yaml
-from utils.logging import logger
 
 
 def load_extensions(extensions_path: Path) -> Set[str]:
@@ -24,11 +23,11 @@ def load_extensions(extensions_path: Path) -> Set[str]:
                 extension = line.strip()
                 if extension:
                     extensions.add(extension)
-        logger.info(f"Extensions have been loaded from {extensions_path}")
+        print(f"Extensions have been loaded from {extensions_path}")
     except FileNotFoundError:
-        logger.error(f"Error: {extensions_path} not found.")
+        print(f"Error: {extensions_path} not found.")
     except Exception as e:
-        logger.error(f"An error occurred: {e}")
+        print(f"An error occurred: {e}")
 
     return extensions
 
@@ -44,7 +43,7 @@ def save_extensions(extensions: Set[str], extensions_path: Path):
     with open(extensions_path, "w") as ext_file:
         for ext in extensions:
             ext_file.write(f"{ext}\n")
-    logger.info(f"Extensions have been saved to {extensions_path}")
+    print(f"Extensions have been saved to {extensions_path}")
 
 
 def add_std_additional_extensible(extensions: Set[str]):
@@ -64,7 +63,7 @@ def add_std_additional_extensible(extensions: Set[str]):
         ".cfg",
         ".md",
         ".rst",
-        ".txt",
+        # ".txt",
         ".adoc",
         ".npmrc",
         ".nvmdrc",
@@ -73,7 +72,7 @@ def add_std_additional_extensible(extensions: Set[str]):
         ".md",
         ".csv",
         ".xml",
-        "",  # For files like LICENSE
+        # "LICENSE",  # For files like LICENSE
     }
     extensions.update(additional_extensions)
 

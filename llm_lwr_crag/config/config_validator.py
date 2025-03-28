@@ -9,7 +9,7 @@ class LLMConfig(BaseModel):
     LLM YAML configuration validator.
     """
 
-    provider: Literal["hf", "openai"] = DEFAULT_ARGS.retriever.llm.provider
+    provider: Literal["hf", "openai", "google"] = DEFAULT_ARGS.retriever.llm.provider
 
     # Huggingface related arguments
     base_model: Optional[str] = DEFAULT_ARGS.retriever.llm.base_model

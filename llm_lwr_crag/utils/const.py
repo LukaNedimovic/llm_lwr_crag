@@ -35,11 +35,12 @@ DEFAULT_ARGS = Box(
             },
             "llm": {
                 "provider": "hf",
+                # General API
+                "api_key": "your-api-key",
                 # Huggingface
                 "base_model": "sentence-transformers/all-MiniLM-L6-v2",
                 "device": "cuda",
                 # OpenAI
-                "api_key": "your-openai-api-key",
                 "model_name": "text-embedding-ada-002",
                 "batch_size": 16,
                 "num_threads": 12,
@@ -75,6 +76,7 @@ REQUIRED_ARGS = Box(
                 "provider": {
                     "hf": ["base_model", "device"],
                     "openai": ["api_key", "model_name"],
+                    "google": ["api_key", "model_name"],
                 },
             },
         },

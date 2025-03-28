@@ -1,7 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List, Optional
 
-import numpy as np
 import progressbar
 import torch
 from data_processing import ChunkDict
@@ -53,10 +52,10 @@ class HFHandler(AbstractLLM):
         else:
             raise ValueError(f"Invalid OpenAI model use case: {self.use_case}")
 
-    def embed_text(self, text: str) -> np.ndarray:
-        return np.array(self.model.embed_query(text), dtype=np.float32)
+    def embed_query(self, query: str):
+        return self.model.embed_query(query)
 
-    def embed_chunks(self, chunks: List[Document]) -> ChunkDict:
+    def embed_documents(self, documents) -> ChunkDict:
         texts = []
         embeddings = []
         metadata = []
@@ -72,15 +71,15 @@ class HFHandler(AbstractLLM):
                 " ",
                 progressbar.ETA(),
             ],
-            maxval=len(chunks),
+            maxval=len(documents),
         ).start()
 
         # Generate embeddings for each chunk
-        for i, chunk in enumerate(chunks):
+        for i, chunk in enumerate(documents):
             text = chunk.page_content
             source = chunk.metadata["source"]
 
-            embedding = self.embed_text(text)
+            embedding = self.embed_query(text)
 
             chunk_id = f"{source}_{i}"
             texts.append(text)

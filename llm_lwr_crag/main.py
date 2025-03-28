@@ -5,17 +5,22 @@ from itertools import zip_longest
 import pandas as pd
 from box import Box  # type: ignore
 from data_processing import (
-    add_document_metadata,
     chunk_documents,
     load_documents,
     make_text_chunker,
 )
-from handlers.auto import AbstractDB, AbstractLLM, AutoDB, AutoLLM
-from utils import download_repo, gen_extensions, parse_args, parse_eval, path
+from handlers.auto import AbstractDB, AutoDB, AutoLLM
+from utils import (
+    download_repo,
+    gen_extensions,
+    logger,
+    parse_args,
+    parse_eval,
+    path,
+)
 
 
 def eval(
-    ret_llm: AbstractLLM,
     ret_db: AbstractDB,
     eval_df: pd.DataFrame,
     k: int = 10,
@@ -35,13 +40,15 @@ def eval(
 
     for _, row in eval_df.iterrows():
         # Query the database to get top-K relevant files
-        question = ret_llm.embed_text(row["question"])
-        retrieved_files = ret_db.query(question, top_k=k)
-        retrieved_files = set(retrieved_files)
+        retrieved_files_all = ret_db.query(row["question"], k=4 * k)
+        retrieved_files = set()
+        for rf in retrieved_files_all:
+            retrieved_files.add(rf.metadata["rel_path"])
 
         # Calculate Recall@K for the question
         ground_truth_files = set(row["files"])
         relevant_retrieved = ground_truth_files.intersection(retrieved_files)
+
         recall = (
             len(relevant_retrieved) / len(ground_truth_files)
             if ground_truth_files
@@ -51,8 +58,8 @@ def eval(
         total_recall += recall
 
         for gnd, ret in zip_longest(ground_truth_files, retrieved_files, fillvalue=""):
-            print(f"{str(gnd):<80} {str(ret)}")
-        print("Common: ", len(relevant_retrieved), recall)
+            logger.info(f"{str(gnd):<80} {str(ret)}")
+        logger.info(f"Common:  len(relevant_retrieved) {recall * 100:.2f}")
 
     # Average Recall@K across all questions
     avg_recall = total_recall / len(eval_df)
@@ -74,19 +81,16 @@ def train(args: Box):
     documents = load_documents(path(args.repo_dir), extensions)
     text_chunker = make_text_chunker(args.retriever.chunking)
     chunks = chunk_documents(documents, text_chunker)
-    add_document_metadata(chunks, args.retriever.metadata)
 
     # LLM used for embedding the chunks and database initialization
-    ret_llm = AutoLLM.from_args(args.retriever.llm)
+    ret_emb = AutoLLM.from_args(args.retriever.llm)
+    args.retriever.db["emb_llm"] = ret_emb
     ret_db = AutoDB.from_args(args.retriever.db)
-
-    # Embed the chunks and store them in the database
-    chunks_data = ret_llm.embed_chunks(chunks)
-    ret_db.store_embeddings(chunks_data)
+    ret_db.add_documents(chunks)
 
     # Evaluate the dataset
-    avg_recall = eval(ret_llm, ret_db, eval_df)
-    print(f"{avg_recall * 100:.2f}")
+    avg_recall = eval(ret_db, eval_df)
+    logger.info(f"{avg_recall * 100:.2f}")
 
 
 if __name__ == "__main__":

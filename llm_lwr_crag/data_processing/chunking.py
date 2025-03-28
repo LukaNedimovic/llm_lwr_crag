@@ -45,7 +45,7 @@ def chunk_documents(documents: List[Document], text_chunker) -> List[dict]:
                     all_chunks.append(
                         Document(
                             page_content=split,
-                            metadata={"source": doc.metadata["path"]},
+                            metadata=doc.metadata,
                         )
                     )
 

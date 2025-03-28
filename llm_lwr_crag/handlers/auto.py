@@ -1,10 +1,10 @@
 from box import Box
 
 from .db import AbstractDB, ChromaDBHandler
-from .llm import AbstractLLM, HFHandler, OpenAIHandler
+from .llm import AbstractLLM, GoogleHandler, HFHandler, OpenAIHandler
 
 NAME_TO_DB_TYPE = {"chromadb": ChromaDBHandler}
-NAME_TO_LLM_TYPE = {"hf": HFHandler, "openai": OpenAIHandler}
+NAME_TO_LLM_TYPE = {"hf": HFHandler, "openai": OpenAIHandler, "google": GoogleHandler}
 
 
 class AutoDB:

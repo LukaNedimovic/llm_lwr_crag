@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, List
+from typing import List, Tuple
 
 
 class AbstractDB(ABC):
@@ -8,22 +8,16 @@ class AbstractDB(ABC):
     """
 
     @abstractmethod
-    def store_embeddings(self, chunks_data: dict) -> None:
+    def add_documents(self, chunks) -> None:
         """
-        Store embeddings in the database.
-        """
-        pass
-
-    @abstractmethod
-    def query(self, query_embedding: Any, top_k: int) -> List[str]:
-        """
-        Query the database to retrieve the most similar documents.
+        Store embeddings in the Chroma database.
         """
         pass
 
     @abstractmethod
-    def delete_embeddings(self, ids: List[str]) -> None:
+    def query(self, query: str, k: int = 10) -> List[Tuple[str, float]]:
         """
-        Delete embeddings from the database by IDs.
+        Query the Chroma database for files.
+        This modified version returns both the file paths and their similarity scores.
         """
         pass

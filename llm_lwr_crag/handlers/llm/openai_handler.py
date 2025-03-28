@@ -2,9 +2,7 @@ import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List, Optional
 
-import numpy as np
 import progressbar
-from data_processing import ChunkDict
 from langchain.schema import Document, HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from utils.parse import parse_txt
@@ -30,6 +28,7 @@ class OpenAIHandler(AbstractLLM):
                 openai_api_key=args.api_key,
                 model=self.model_name,
                 temperature=0,
+                max_tokens=200,
             )
             self.split_text_system_msg = parse_txt(path(args.split_text_system_msg))
             self.split_text_human_msg = parse_txt(path(args.split_text_human_msg))
@@ -37,70 +36,11 @@ class OpenAIHandler(AbstractLLM):
         else:
             raise ValueError(f"Invalid OpenAI model use case: {self.use_case}")
 
-    def embed_text(self, text: str) -> np.ndarray:
-        return np.array(self.model.embed_query(text), dtype=np.float32)
+    def embed_documents(self, texts):
+        return self.model.embed_documents(texts)
 
-    def _embed_batch(self, texts: List[str]) -> List[np.ndarray]:
-        return [
-            (
-                np.array(vec, dtype=np.float32)
-                for vec in self.model.embed_documents(texts)
-            )
-        ]
-
-    def embed_chunks(self, chunks: List[Document]) -> ChunkDict:
-        texts = []
-        embeddings = []
-        metadata = []
-        ids = []
-
-        chunk_texts = [chunk.page_content for chunk in chunks]
-        text_batches = [
-            chunk_texts[i : i + self.batch_size]  # noqa: E203
-            for i in range(0, len(chunk_texts), self.batch_size)
-        ]
-
-        bar = progressbar.ProgressBar(
-            widgets=[
-                "Embedding chunks: [",
-                progressbar.Percentage(),
-                "] ",
-                progressbar.Bar(),
-                " ",
-                progressbar.ETA(),
-            ],
-            maxval=len(chunks),
-        ).start()
-
-        with ThreadPoolExecutor(max_workers=self.num_threads) as executor:
-            batch_embeddings = [
-                emb
-                for batch in executor.map(self._embed_batch, text_batches)
-                for emb in batch
-            ]
-
-        index = 0
-        for batch in batch_embeddings:
-            for embedding in batch:
-                chunk = chunks[index]
-
-                texts.append(chunk.page_content)
-                embeddings.append(embedding)
-                metadata.append(
-                    {"source": chunk.metadata["source"], "chunk_index": index}
-                )
-                ids.append(f"{chunk.metadata['source']}_{index}")
-
-                bar.update(index + 1)
-                index += 1
-        bar.finish()
-
-        return ChunkDict(
-            texts=texts,
-            embeddings=embeddings,
-            metadatas=metadata,
-            ids=ids,
-        )
+    def embed_query(self, query):
+        return self.model.embed_query(query)
 
     def split_text(self, text: str) -> List[str]:
         if self.use_case != "chatting":
@@ -177,17 +117,17 @@ class OpenAIHandler(AbstractLLM):
         if self.use_case != "chatting":
             raise ValueError("Cannot perform summarization with a non-chat model.")
 
-        bar = progressbar.ProgressBar(
-            widgets=[
-                "Summarizing texts: [",
-                progressbar.Percentage(),
-                "] ",
-                progressbar.Bar(),
-                " ",
-                progressbar.ETA(),
-            ],
-            max_value=len(documents),
-        ).start()
+        # bar = progressbar.ProgressBar(
+        #     widgets=[
+        #         "Summarizing texts: [",
+        #         progressbar.Percentage(),
+        #         "] ",
+        #         progressbar.Bar(),
+        #         " ",
+        #         progressbar.ETA(),
+        #     ],
+        #     max_value=len(documents),
+        # ).start()
 
         with ThreadPoolExecutor(max_workers=self.num_threads) as executor:
             future_to_document = {
@@ -202,5 +142,6 @@ class OpenAIHandler(AbstractLLM):
                     doc.metadata["llm_summary"] = summary
                 except Exception as e:
                     print(f"ERROR: {str(e)}")
-                bar.update(i + 1)
-        bar.finish()
+                    doc.metadata["llm_summary"] = ""
+                # bar.update(i + 1)
+        # bar.finish()
