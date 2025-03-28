@@ -9,6 +9,7 @@ from .codeparser import CodeParser
 # LLM to use for summary - cached as global variable
 # to prevent multiple AutoLLM calls
 llm_summary = None
+llm_augment = None
 
 
 def gen_summary(doc: Document, metadata_args: Box) -> None:
@@ -40,11 +41,31 @@ def gen_code_structure(documents: Union[Document, list[Document]], metadata_args
         doc.metadata["functions"] = ", ".join([fp for f in functions for fp in f])
         doc.metadata["classes"] = ", ".join([fclp for cl in classes for fclp in cl])
 
+        doc.page_content = (
+            f"Functions: {doc.metadata['functions']}"
+            "\n\n"
+            f"Classes: {doc.metadata['classes']}"
+            "\n\n"
+            f"Content: {doc.page_content}"
+        )
+
+
+def augment_query(query: str, metadata_args: Box) -> str:
+    # Check whether it is the first time instantiating the LLM for summary
+    # If so, instantiate it and keep it cached
+    global llm_augment
+    if llm_augment is None:
+        llm_augment_args = metadata_args.augment_query
+        llm_augment = AutoLLM.from_args(llm_augment_args)
+
+    # Augment the query
+    return llm_augment.augment(query)
+
 
 # Metadata piece to function mapping
 MD_PC_TO_FUNC = {
-    "llm_summary": gen_summary,
     "code_structure": gen_code_structure,
+    "llm_summary": gen_summary,
 }
 
 

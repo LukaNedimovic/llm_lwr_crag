@@ -28,6 +28,7 @@ class LLMConfig(BaseModel):
         DEFAULT_ARGS.retriever.llm.split_text_human_msg
     )
     summarize_msg: Optional[str] = DEFAULT_ARGS.retriever.llm.summarize_msg
+    augment_msg: Optional[str] = DEFAULT_ARGS.retriever.llm.augment_msg
 
     @model_validator(mode="before")
     def check_required_properties(cls, values):
@@ -69,6 +70,14 @@ class MetadataConfig(BaseModel):
                 )
 
         return values
+
+
+class EvalConfig(BaseModel):
+    """
+    Evaluation preprocessing configuration.
+    """
+
+    augment_query: Optional[LLMConfig] = DEFAULT_ARGS.retriever.eval.augment_query
 
 
 class RetrieverChunkingConfig(BaseModel):
@@ -135,10 +144,12 @@ class RetrieverConfig(BaseModel):
     Retriever YAML configuration validator.
     """
 
+    eval: EvalConfig
     metadata: MetadataConfig
     chunking: RetrieverChunkingConfig
     db: RetrieverDBConfig
     llm: LLMConfig
+    bm25: Optional[bool] = False
 
 
 class ConfigValidator(BaseModel):

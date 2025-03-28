@@ -11,6 +11,7 @@ class AbstractLLM(ABC):
     use_case: str
     model: Union[BaseLanguageModel, Embeddings]
     summarize_msg: Optional[str] = ""
+    augment_msg: Optional[str] = ""
 
     def __init__(self, args: Box):
         pass
@@ -41,17 +42,50 @@ class AbstractLLM(ABC):
         # If Document is provided
         text = doc_or_text
         if isinstance(text, Document):
-            text = text.page_content
+            doc: Document = doc_or_text  # Wrap for readability
+            prompt = [
+                HumanMessage(
+                    content=f"""
+                        {self.summarize_msg}
 
+                        Text:
+                        {doc.page_content}
+                        Relative file path: {doc.metadata['rel_path']}
+                        Extension: {doc.metadata['ext']}
+                        """
+                ),
+            ]
+        else:
+            text = doc_or_text  # Wrap for readability
+            prompt = [
+                HumanMessage(
+                    content=f"""
+                        {self.summarize_msg}
+
+                        Text:
+                        {text}
+                        """
+                ),
+            ]
+
+        response = self.model.invoke(prompt)
+        return response.content.strip()
+
+    def augment(self, query: str) -> str:
+        if self.use_case != "generation":
+            raise ValueError("Cannot augment query using non-generative model.")
+
+        # If Document is provided
         prompt = [
             HumanMessage(
                 content=f"""
-                    {self.summarize_msg}
+                    {self.augment_msg}
 
                     Text:
-                    {text}
+                    {query}
                     """
             ),
         ]
+
         response = self.model.invoke(prompt)
         return response.content.strip()

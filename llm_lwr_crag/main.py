@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from itertools import zip_longest
-from typing import Set
 
 import pandas as pd
 from box import Box  # type: ignore
@@ -9,6 +8,7 @@ from data_processing import (
     chunk_docs,
     load_docs,
     make_text_chunker,
+    preprocess_eval,
 )
 from handlers.auto import AbstractDB, AutoDB, AutoLLM
 
@@ -28,15 +28,16 @@ is_verbose = get_verbose()
 
 
 def eval(
-    ret_db: AbstractDB,
     eval_df: pd.DataFrame,
+    ret_db_vec: AbstractDB,
+    ret_db_bm25: AbstractDB,
     k: int = 10,
 ) -> float:
     """
     Evaluate the system with Recall@K metric.
 
     Args:
-        ret_db (AbstractDBHandler): Database to query.
+        ret_db_vec (AbstractDBHandler): Database to query.
         eval_df (pd.DataFrame): Evaluation data.
         k (int = 10): Top-K files to be retrieved
 
@@ -47,18 +48,25 @@ def eval(
     total_recall = 0.0
 
     for _, row in eval_df.iterrows():
+        query = row["question"]
+
         # Query the database to get top-K relevant files
         # Corrective factor of 4 used as an example - can be changed
         # as it is a hyperparameter
-        ret_files_all = ret_db.query(row["question"], k=4 * k)
+        ret_files_vec = ret_db_vec.query(query, k=4 * k)
+        ret_files_vec = ret_db_vec.filter_by_fp(ret_files_vec, top_k=k)
 
-        # Since some retrieved chunks may belong to the same source,
-        # filter them to make sure to include at most K different sources
-        ret_files: Set[str] = set()
-        for rf in ret_files_all:
-            if len(ret_files) >= k:
-                break
-            ret_files.add(rf.metadata["rel_path"])
+        # Set of all retrieved files, now only from vector DB
+        # Will be merged with BM25 results, if activated
+        ret_files = ret_files_vec
+
+        # If BM25 is used for hybrid search, use it to retrieve files
+        # and use RRF to merge the results
+        if ret_db_bm25:
+            ret_files_bm25 = ret_db_bm25.query(query, k=k // 2)
+            ret_files_bm25 = ret_db_bm25.filter_by_fp(ret_files_bm25, top_k=k // 2)
+
+            ret_files = AbstractDB.rbf(ret_files_vec, ret_files_bm25)
 
         # Calculate Recall@K for the question
         ground_truth_files = set(row["files"])
@@ -77,7 +85,7 @@ def eval(
             logger.info(f"{str(gnd):<80} {str(ret)}")
         logger.info(
             (
-                f"Common: {len(relevant_retrieved)} / {len(ground_truth_files)}"
+                f"Common: {len(relevant_retrieved)} / {len(ground_truth_files)} "
                 f"{recall * 100:.2f}"
             )
         )
@@ -111,6 +119,7 @@ def train(args: Box) -> None:
     # Download GitHub repository and parse the evaluation data
     download_repo(args.repo_url, path(args.repo_dir), force_download=False)
     eval_df = parse_eval(path(args.eval_path))  # noqa: F841
+    preprocess_eval(eval_df, args.retriever.eval)
 
     # Set up retrieval pipeline
     # Document loading and chunking
@@ -129,13 +138,18 @@ def train(args: Box) -> None:
     # Add the model to the kwargs and create the database with the LLM
     # as embedding function
     args.retriever.db["emb_func"] = ret_emb_llm
-    ret_db = AutoDB.from_args(args.retriever.db)
+    ret_db_vec = AutoDB.from_args(args.retriever.db)
+    ret_db_vec.add_documents(chunks)
 
-    # Add the documents to the database
-    ret_db.add_documents(chunks)
+    # BM25 setup, for hybrid search
+    ret_db_bm25 = None
+    if args.retriever.bm25:
+        ret_db_bm25 = AutoDB.from_args(Box({"provider": "bm25"}))
+        ret_db_bm25.add_documents(docs)
+        # ret_db_bm25.add_documents(chunks)
 
     # Evaluate the dataset
-    avg_recall = eval(ret_db, eval_df)
+    avg_recall = eval(eval_df, ret_db_vec, ret_db_bm25)
     logger.info(f"{avg_recall * 100:.2f}")
 
 

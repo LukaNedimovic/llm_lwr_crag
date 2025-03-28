@@ -40,5 +40,6 @@ class HFHandler(AbstractLLM):
             self.split_text_system_msg = parse_txt(path(args.split_text_system_msg))
             self.split_text_human_msg = parse_txt(path(args.split_text_human_msg))
             self.summarize_msg = parse_txt(path(args.summarize_msg))
+            self.augment_msg = parse_txt(path(args.augment_msg))
         else:
             raise ValueError(f"Invalid Huggingface model use case: {self.use_case}")

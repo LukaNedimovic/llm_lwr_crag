@@ -1,9 +1,9 @@
 from box import Box
 
-from .db import AbstractDB, ChromaDBHandler
+from .db import AbstractDB, BM25Handler, ChromaDBHandler
 from .llm import AbstractLLM, HFHandler, OpenAIHandler
 
-NAME_TO_DB_TYPE = {"chromadb": ChromaDBHandler}
+NAME_TO_DB_TYPE = {"chromadb": ChromaDBHandler, "bm25": BM25Handler}
 NAME_TO_LLM_TYPE = {"hf": HFHandler, "openai": OpenAIHandler}
 
 

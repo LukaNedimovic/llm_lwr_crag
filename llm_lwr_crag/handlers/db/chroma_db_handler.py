@@ -1,5 +1,6 @@
 from typing import List, Tuple
 
+from langchain.schema import Document
 from langchain_chroma import Chroma
 from utils.logging import logger
 
@@ -14,7 +15,7 @@ class ChromaDBHandler(AbstractDB):
             embedding_function=args.emb_func,
         )
 
-    def add_documents(self, chunks) -> None:
+    def add_documents(self, chunks: List[Document]) -> None:
         """
         Store embeddings in the Chroma database.
         """
