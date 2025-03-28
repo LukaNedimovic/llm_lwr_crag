@@ -11,7 +11,7 @@ class ChromaDBHandler(AbstractDB):
         self.collection_name = args.collection_name
         self.db = Chroma(
             collection_name=args.collection_name,
-            embedding_function=args.emb_llm,
+            embedding_function=args.emb_func,
         )
 
     def add_documents(self, chunks) -> None:

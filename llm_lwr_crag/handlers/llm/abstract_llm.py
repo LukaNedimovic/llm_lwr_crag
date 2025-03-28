@@ -1,39 +1,57 @@
-from abc import ABC, abstractmethod
-from typing import List, Optional
+from abc import ABC
+from typing import List, Optional, Union
 
 from box import Box
-from langchain.schema import Document
+from langchain.schema import Document, HumanMessage
+from langchain_core.embeddings import Embeddings
+from langchain_core.language_models import BaseLanguageModel
 
 
 class AbstractLLM(ABC):
-    @abstractmethod
+    use_case: str
+    model: Union[BaseLanguageModel, Embeddings]
+    summarize_msg: Optional[str] = ""
+
     def __init__(self, args: Box):
         pass
 
-    @abstractmethod
-    def embed_query(self, query: str):
+    def embed_query(self, query: str) -> List[float]:
         """
         Embeds the query for the given retrieval task.
         """
-        pass
+        if self.use_case != "embedding":
+            raise ValueError("Cannot embed the query using non-embedding model.")
+        return self.model.embed_query(query)
 
-    @abstractmethod
-    def embed_documents(self, documents):
+    def embed_documents(self, docs: List[str]) -> List[List[float]]:
         """
         Embeds the list of given documents.
         """
-        pass
+        if self.use_case != "embedding":
+            raise ValueError("Cannot embed documents using non-embedding model.")
+        return self.model.embed_documents(docs)
 
-    @abstractmethod
-    def split_text(self, text: str) -> Optional[List[str]]:
-        """
-        Split given text into chunks.
-        """
-        pass
-
-    @abstractmethod
-    def gen_summaries(self, documents: List[Document]):
+    def gen_summary(self, doc_or_text: Union[Document, str]) -> str:
         """
         Generate LLM summary for the given content.
         """
-        pass
+        if self.use_case != "generation":
+            raise ValueError("Cannot generate summary using non-generative model.")
+
+        # If Document is provided
+        text = doc_or_text
+        if isinstance(text, Document):
+            text = text.page_content
+
+        prompt = [
+            HumanMessage(
+                content=f"""
+                    {self.summarize_msg}
+
+                    Text:
+                    {text}
+                    """
+            ),
+        ]
+        response = self.model.invoke(prompt)
+        return response.content.strip()

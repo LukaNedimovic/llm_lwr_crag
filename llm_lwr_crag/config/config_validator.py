@@ -20,7 +20,7 @@ class LLMConfig(BaseModel):
     model_name: Optional[str] = DEFAULT_ARGS.retriever.llm.model_name
     batch_size: Optional[int] = DEFAULT_ARGS.retriever.llm.batch_size
     num_threads: Optional[int] = DEFAULT_ARGS.retriever.llm.num_threads
-    use_case: Literal["embedding", "chatting"] = DEFAULT_ARGS.retriever.llm.use_case
+    use_case: Literal["embedding", "generation"] = DEFAULT_ARGS.retriever.llm.use_case
     split_text_system_msg: Optional[str] = (
         DEFAULT_ARGS.retriever.llm.split_text_system_msg
     )

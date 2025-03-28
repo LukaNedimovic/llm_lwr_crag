@@ -7,7 +7,7 @@ from langchain.schema import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 
-def chunk_documents(documents: List[Document], text_chunker) -> List[dict]:
+def chunk_docs(documents: List[Document], text_chunker) -> List[dict]:
     """
     Split documents into chunks.
 
