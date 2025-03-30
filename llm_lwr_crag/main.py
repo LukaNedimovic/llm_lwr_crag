@@ -32,6 +32,7 @@ def eval(
     ret_db_vec: AbstractDB,
     ret_rerank: AbstractLLM,
     ret_db_bm25: AbstractDB,
+    gen_llm: AbstractLLM,
     k: int = 10,
 ) -> float:
     """
@@ -55,6 +56,7 @@ def eval(
         # Corrective factor of 4 used as an example - can be changed
         # as it is a hyperparameter
         ret_chunks = ret_db_vec.query(query, k=4 * k)
+        ret_fps = None
 
         # Apply BM25, if applicable
         # Hybrid search with BM25 is done based on file paths,
@@ -77,6 +79,9 @@ def eval(
             ret_chunks = ret_rerank.rerank(query, ret_chunks)
             ret_fps, ret_chunks = AbstractDB.filter_by_fp(ret_chunks, top_k=k)
 
+        # In case over pure vector search, make sure to filter out file paths
+        if ret_fps is None:
+            ret_fps, ret_chunks = AbstractDB.filter_by_fp(ret_chunks, top_k=k)
         # Calculate Recall@K for the question
         ground_truth_fps = set(row["files"])
         relevant_retrieved = ground_truth_fps.intersection(ret_fps)
@@ -87,7 +92,8 @@ def eval(
         )
         total_recall += recall
 
-        logger.info(f"Test: {test_id} / {len(eval_df)}")
+        logger.info(f"Test: {test_id + 1} / {len(eval_df)}")
+        logger.info(f"Query: {query}")
         # Compare the ground truth values and the retrieved files
         for gnd, ret in zip_longest(ground_truth_fps, ret_fps, fillvalue=""):
             logger.info(f"{str(gnd):<80} {str(ret)}")
@@ -97,6 +103,9 @@ def eval(
                 f"{recall * 100:.2f}"
             )
         )
+
+        if gen_llm:
+            logger.info(f"Answer: {gen_llm.generate(query, ret_chunks)}")
 
     # Average Recall@K across all questions
     avg_recall = total_recall / len(eval_df)
@@ -161,8 +170,12 @@ def train(args: Box) -> None:
         ret_db_bm25.add_documents(docs)
         # ret_db_bm25.add_documents(chunks)
 
+    # Answer generation using LLM
+    if args.generator:
+        gen_llm = AutoLLM.from_args(args.generator)
+
     # Evaluate the dataset
-    avg_recall = eval(eval_df, ret_db_vec, ret_rerank, ret_db_bm25)
+    avg_recall = eval(eval_df, ret_db_vec, ret_rerank, ret_db_bm25, gen_llm)
     logger.info(f"{avg_recall * 100:.2f}")
 
 

@@ -20,6 +20,7 @@ class OpenAIHandler(AbstractLLM):
         self.summarize_msg = parse_txt(path(args.summarize_msg))
         self.augment_msg = parse_txt(path(args.augment_msg))
         self.rerank_msg = parse_txt(path(args.rerank_msg))
+        self.generate_msg = parse_txt(path(args.generate_msg))
 
         self.use_case = args.use_case
         if self.use_case == "embedding":
@@ -64,3 +65,21 @@ class OpenAIHandler(AbstractLLM):
 
         scored_chunks.sort(key=lambda x: x[1], reverse=True)
         return [chunk for chunk, score in scored_chunks]
+
+    def generate(self, query: str, chunks: List[Document]) -> str:
+        concat_chunks = "\n\n".join([ch.page_content for ch in chunks])
+        prompt = [
+            HumanMessage(
+                content=f"""
+                    {self.generate_msg}
+
+                    Query:
+                    {query}
+
+                    Chunks (used for answer generation)
+                    {concat_chunks}
+                    """
+            ),
+        ]
+        response = self.model.invoke(prompt)
+        return response.content.strip()

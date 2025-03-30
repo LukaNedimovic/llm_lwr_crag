@@ -96,5 +96,11 @@ class AbstractLLM(ABC):
         """
         return []
 
+    def generate(self, query: str, chunks: List[Document]) -> str:
+        """
+        Generate textual answer based on retrieved chunks.
+        """
+        return ""
+
     def __call__(self, text):
         return self.embed_query(text)

@@ -32,6 +32,7 @@ class LLMConfig(BaseModel):
     summarize_msg: Optional[str] = DEFAULT_ARGS.retriever.llm.summarize_msg
     augment_msg: Optional[str] = DEFAULT_ARGS.retriever.llm.augment_msg
     rerank_msg: Optional[str] = DEFAULT_ARGS.retriever.llm.rerank_msg
+    generate_msg: Optional[str] = DEFAULT_ARGS.retriever.llm.generate_msg
 
     @model_validator(mode="before")
     def check_required_properties(cls, values):
@@ -170,6 +171,7 @@ class ConfigValidator(BaseModel):
     eval_path: Optional[str]
 
     retriever: RetrieverConfig
+    generator: Optional[LLMConfig] = None
 
     languages_path: Optional[str] = DEFAULT_ARGS.languages_path
     extensions_path: Optional[str] = DEFAULT_ARGS.extensions_path

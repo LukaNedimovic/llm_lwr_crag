@@ -54,6 +54,7 @@ DEFAULT_ARGS = Box(
                 "summarize_msg": "$PROMPTS_DIR/summarize_msg.txt",
                 "augment_msg": "$PROMPTS_DIR/augment_msg.txt",
                 "rerank_msg": "$PROMPTS_DIR/rerank_msg.txt",
+                "generate_msg": "$PROMPTS_DIR/generate_msg.txt",
             },
             "rerank": {
                 "provider": "hf",
