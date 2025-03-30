@@ -53,6 +53,7 @@ DEFAULT_ARGS = Box(
                 "split_text_human_msg": "$PROMPTS_DIR/split_text_hmn_default.txt",
                 "summarize_msg": "$PROMPTS_DIR/summarize_msg.txt",
                 "augment_msg": "$PROMPTS_DIR/augment_msg.txt",
+                "rerank_msg": "$PROMPTS_DIR/rerank_msg.txt",
             },
             "rerank": {
                 "provider": "hf",

@@ -31,6 +31,7 @@ class LLMConfig(BaseModel):
     )
     summarize_msg: Optional[str] = DEFAULT_ARGS.retriever.llm.summarize_msg
     augment_msg: Optional[str] = DEFAULT_ARGS.retriever.llm.augment_msg
+    rerank_msg: Optional[str] = DEFAULT_ARGS.retriever.llm.rerank_msg
 
     @model_validator(mode="before")
     def check_required_properties(cls, values):

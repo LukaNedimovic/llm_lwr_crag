@@ -1,0 +1,2 @@
+Given a query and a document, rate the relevance of the document to the query on a scale of 0 to 1 (floating point score).
+Make sure to output ONLY that number, no other (boilerplate) text.

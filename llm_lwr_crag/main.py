@@ -48,7 +48,7 @@ def eval(
     """
     total_recall = 0.0
 
-    for _, row in eval_df.iterrows():
+    for test_id, row in eval_df.iterrows():
         query = row["question"]
 
         # Query the database to get top-K relevant files
@@ -66,7 +66,7 @@ def eval(
                 ret_chunks_bm25, top_k=k // 2
             )
 
-            ret_fps, ret_chunks = AbstractDB.filter_by_fp(ret_chunks)
+            ret_fps, ret_chunks = AbstractDB.filter_by_fp(ret_chunks, top_k=k)
             ret_fps = AbstractDB.rbf(ret_fps, ret_fps_bm25)
             ret_chunks = AbstractDB.fetch_by_fp(ret_fps, ret_chunks + ret_chunks_bm25)
 
@@ -75,7 +75,7 @@ def eval(
         # Filter out the files after reranking them
         if ret_rerank:
             ret_chunks = ret_rerank.rerank(query, ret_chunks)
-            ret_fps, ret_chunks = AbstractDB.filter_by_fp(ret_chunks)
+            ret_fps, ret_chunks = AbstractDB.filter_by_fp(ret_chunks, top_k=k)
 
         # Calculate Recall@K for the question
         ground_truth_fps = set(row["files"])
@@ -87,6 +87,7 @@ def eval(
         )
         total_recall += recall
 
+        logger.info(f"Test: {test_id} / {len(eval_df)}")
         # Compare the ground truth values and the retrieved files
         for gnd, ret in zip_longest(ground_truth_fps, ret_fps, fillvalue=""):
             logger.info(f"{str(gnd):<80} {str(ret)}")
