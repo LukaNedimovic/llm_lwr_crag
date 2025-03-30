@@ -18,14 +18,6 @@ fi
 # Activate the environment
 conda activate "$CONDA_ENV_NAME"
 
-# Install additional dependencies from requirements.txt if it exists
-if [[ -f "requirements.txt" ]]; then
-    echo "Installing dependencies from requirements.txt..."
-    pip install -r requirements.txt
-else
-    echo "requirements.txt not found. Skipping installation."
-fi
-
 echo "Environment setup complete."
 
 # General environment variables
