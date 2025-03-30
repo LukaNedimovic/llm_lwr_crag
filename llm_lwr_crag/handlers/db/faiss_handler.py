@@ -2,8 +2,8 @@ from typing import List, Tuple
 
 import faiss
 from langchain.schema import Document
-from langchain.vectorstores import FAISS
 from langchain_community.docstore.in_memory import InMemoryDocstore
+from langchain_community.vectorstores import FAISS
 from utils.logging import logger
 
 from .abstract_db import AbstractDB

@@ -1,9 +1,18 @@
+from typing import List
+
 import torch
+from langchain.schema import Document
 from langchain_huggingface import (
     HuggingFaceEmbeddings,
     HuggingFacePipeline,
 )
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, pipeline
+from transformers import (
+    AutoConfig,
+    AutoModelForSeq2SeqLM,
+    AutoModelForSequenceClassification,
+    AutoTokenizer,
+    pipeline,
+)
 from utils.parse import parse_txt
 from utils.path import path
 
@@ -41,5 +50,51 @@ class HFHandler(AbstractLLM):
             self.split_text_human_msg = parse_txt(path(args.split_text_human_msg))
             self.summarize_msg = parse_txt(path(args.summarize_msg))
             self.augment_msg = parse_txt(path(args.augment_msg))
+        elif self.use_case == "reranking":
+            config = AutoConfig.from_pretrained(self.base_model)
+            if not (
+                config.architectures
+                and any(
+                    "ForSequenceClassification" in arch for arch in config.architectures
+                )
+            ):
+                raise ValueError(
+                    "Cannot perform reranking with a non-cross-encoder model."
+                )
+
+            self.model = AutoModelForSequenceClassification.from_pretrained(
+                "cross-encoder/ms-marco-MiniLM-L6-v2"
+            )
+            self.tokenizer = AutoTokenizer.from_pretrained(
+                "cross-encoder/ms-marco-MiniLM-L6-v2"
+            )
         else:
             raise ValueError(f"Invalid Huggingface model use case: {self.use_case}")
+
+    def rerank(self, query: str, chunks: List[Document]) -> List[Document]:
+        """
+        Rerank the documents based on the given query.
+        """
+        query_chunk_pairs = [
+            [query for _ in range(len(chunks))],
+            [ch.page_content for ch in chunks],
+        ]
+        feats = self.tokenizer(
+            query_chunk_pairs[0],
+            query_chunk_pairs[1],
+            padding=True,
+            truncation=True,
+            return_tensors="pt",
+        )
+
+        self.model.eval()
+        with torch.no_grad():
+            scores = self.model(**feats).logits
+
+        chunk_score_pairs = list(zip(chunks, scores))
+        sorted_chunk_score_pairs = sorted(
+            chunk_score_pairs, key=lambda x: x[1], reverse=True
+        )
+
+        sorted_chunks = [pair[0] for pair in sorted_chunk_score_pairs]
+        return sorted_chunks

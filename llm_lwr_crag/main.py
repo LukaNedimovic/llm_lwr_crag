@@ -10,7 +10,7 @@ from data_processing import (
     make_text_chunker,
     preprocess_eval,
 )
-from handlers.auto import AbstractDB, AutoDB, AutoLLM
+from handlers.auto import AbstractDB, AbstractLLM, AutoDB, AutoLLM
 
 # Turn off Langchain verbose mode
 from langchain.globals import get_verbose, set_verbose
@@ -30,6 +30,7 @@ is_verbose = get_verbose()
 def eval(
     eval_df: pd.DataFrame,
     ret_db_vec: AbstractDB,
+    ret_rerank: AbstractLLM,
     ret_db_bm25: AbstractDB,
     k: int = 10,
 ) -> float:
@@ -53,39 +54,45 @@ def eval(
         # Query the database to get top-K relevant files
         # Corrective factor of 4 used as an example - can be changed
         # as it is a hyperparameter
-        ret_files_vec = ret_db_vec.query(query, k=4 * k)
-        ret_files_vec = ret_db_vec.filter_by_fp(ret_files_vec, top_k=k)
+        ret_chunks = ret_db_vec.query(query, k=4 * k)
 
-        # Set of all retrieved files, now only from vector DB
-        # Will be merged with BM25 results, if activated
-        ret_files = ret_files_vec
-
-        # If BM25 is used for hybrid search, use it to retrieve files
-        # and use RRF to merge the results
+        # Apply BM25, if applicable
+        # Hybrid search with BM25 is done based on file paths,
+        # therefore file paths must be filtered out first,
+        # and then the chunks
         if ret_db_bm25:
-            ret_files_bm25 = ret_db_bm25.query(query, k=k // 2)
-            ret_files_bm25 = ret_db_bm25.filter_by_fp(ret_files_bm25, top_k=k // 2)
+            ret_chunks_bm25 = ret_db_bm25.query(query, k=k // 2)
+            ret_fps_bm25, ret_chunks_bm25 = AbstractDB.filter_by_fp(
+                ret_chunks_bm25, top_k=k // 2
+            )
 
-            ret_files = AbstractDB.rbf(ret_files_vec, ret_files_bm25)
+            ret_fps, ret_chunks = AbstractDB.filter_by_fp(ret_chunks)
+            ret_fps = AbstractDB.rbf(ret_fps, ret_fps_bm25)
+            ret_chunks = AbstractDB.fetch_by_fp(ret_fps, ret_chunks + ret_chunks_bm25)
+
+        # Apply reranking, if applicable
+        # Reranking is done based on the file content
+        # Filter out the files after reranking them
+        if ret_rerank:
+            ret_chunks = ret_rerank.rerank(query, ret_chunks)
+            ret_fps, ret_chunks = AbstractDB.filter_by_fp(ret_chunks)
 
         # Calculate Recall@K for the question
-        ground_truth_files = set(row["files"])
-        relevant_retrieved = ground_truth_files.intersection(ret_files)
+        ground_truth_fps = set(row["files"])
+        relevant_retrieved = ground_truth_fps.intersection(ret_fps)
 
         # Calculate Recall@K and add it to the total_recall for future calculation
         recall = (
-            len(relevant_retrieved) / len(ground_truth_files)
-            if ground_truth_files
-            else 0.0
+            len(relevant_retrieved) / len(ground_truth_fps) if ground_truth_fps else 0.0
         )
         total_recall += recall
 
         # Compare the ground truth values and the retrieved files
-        for gnd, ret in zip_longest(ground_truth_files, ret_files, fillvalue=""):
+        for gnd, ret in zip_longest(ground_truth_fps, ret_fps, fillvalue=""):
             logger.info(f"{str(gnd):<80} {str(ret)}")
         logger.info(
             (
-                f"Common: {len(relevant_retrieved)} / {len(ground_truth_files)} "
+                f"Common: {len(relevant_retrieved)} / {len(ground_truth_fps)} "
                 f"{recall * 100:.2f}"
             )
         )
@@ -141,6 +148,11 @@ def train(args: Box) -> None:
     ret_db_vec = AutoDB.from_args(args.retriever.db)
     ret_db_vec.add_documents(chunks)
 
+    # Reranking LLM setup
+    ret_rerank = None
+    if args.retriever.rerank:
+        ret_rerank = AutoLLM.from_args(args.retriever.rerank)
+
     # BM25 setup, for hybrid search
     ret_db_bm25 = None
     if args.retriever.bm25:
@@ -149,7 +161,7 @@ def train(args: Box) -> None:
         # ret_db_bm25.add_documents(chunks)
 
     # Evaluate the dataset
-    avg_recall = eval(eval_df, ret_db_vec, ret_db_bm25)
+    avg_recall = eval(eval_df, ret_db_vec, ret_rerank, ret_db_bm25)
     logger.info(f"{avg_recall * 100:.2f}")
 
 

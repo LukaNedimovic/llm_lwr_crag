@@ -54,6 +54,11 @@ DEFAULT_ARGS = Box(
                 "summarize_msg": "$PROMPTS_DIR/summarize_msg.txt",
                 "augment_msg": "$PROMPTS_DIR/augment_msg.txt",
             },
+            "rerank": {
+                "provider": "hf",
+                "base_model": "cross-encoder/msmarco-MiniLM-L6-cos-v5",
+                "use_case": "reranking",
+            },
         },
         "languages_path": "$DATA_DIR/languages.yml",
         "extensions_path": "$DATA_DIR/extensions.txt",

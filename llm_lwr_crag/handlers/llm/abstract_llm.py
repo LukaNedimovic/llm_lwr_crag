@@ -90,5 +90,11 @@ class AbstractLLM(ABC):
         response = self.model.invoke(prompt)
         return response.content.strip()
 
+    def rerank(self, query: str, chunks: List[Document]) -> List[Document]:
+        """
+        Rerank the documents based on the given query.
+        """
+        return []
+
     def __call__(self, text):
         return self.embed_query(text)

@@ -23,19 +23,22 @@ class AbstractDB(ABC):
         """
         return []
 
-    def filter_by_fp(self, ret_chunks, top_k: int = 10) -> List[str]:
-        ret_files: Set[str] = set()
-        for rf in ret_chunks:
-            if len(ret_files) >= top_k:
+    @staticmethod
+    def filter_by_fp(all_ret_chunks, top_k: int = 10) -> Tuple[List[str], List[str]]:
+        ret_chunks: List[str] = []
+        ret_fps: Set[str] = set()
+        for rc in all_ret_chunks:
+            if len(ret_fps) >= top_k:
                 break
-            ret_files.add(rf.metadata["rel_path"])
+            ret_chunks.append(rc)
+            ret_fps.add(rc.metadata["rel_path"])
 
-        return list(ret_files)
+        return list(ret_fps), ret_chunks
 
     @staticmethod
     def rrf(
-        ret_files_1: List[str],
-        ret_files_2: List[str],
+        ret_fps_1: List[str],
+        ret_fps_2: List[str],
         smooth_k: int = 60,
         top_k: int = 10,
     ) -> List[str]:
@@ -46,8 +49,8 @@ class AbstractDB(ABC):
             for rank, file in enumerate(ret_files, start=1):
                 scores[file] += 1 / (smooth_k + rank)
 
-        rrf_make_scores(ret_files_1, smooth_k)
-        rrf_make_scores(ret_files_2, smooth_k)
+        rrf_make_scores(ret_fps_1, smooth_k)
+        rrf_make_scores(ret_fps_2, smooth_k)
 
         # Sort files by their total RRF scores in descending order
         # Return only the file paths in ranked order
@@ -56,7 +59,7 @@ class AbstractDB(ABC):
         return [file for file, _ in ranked_files][:top_k]
 
     @staticmethod
-    def rbf(ret_files_1, ret_files_2, p=0.8, top_k: int = 10):
+    def rbf(ret_fps_1: List[str], ret_fps_2: List[str], p=0.8, top_k: int = 10):
         scores: defaultdict = defaultdict(float)
 
         def rbf_make_scores(ret_files, p):
@@ -64,11 +67,23 @@ class AbstractDB(ABC):
             for rank, file in enumerate(ret_files, start=1):
                 scores[file] += p**rank
 
-        rbf_make_scores(ret_files_1, p)
-        rbf_make_scores(ret_files_2, p)
+        rbf_make_scores(ret_fps_1, p)
+        rbf_make_scores(ret_fps_2, p)
 
         # Sort files by their total RRF scores in descending order
         # Return only the file paths in ranked order
         # Take only first k elements (i.e. top-k)
         ranked_files = sorted(scores.items(), key=lambda x: x[1], reverse=True)
         return [file for file, _ in ranked_files][:top_k]
+
+    @staticmethod
+    def fetch_by_fp(ret_fps: List[str], chunks: List[Document]):
+        ret_chunks: List[Document] = []
+        for fp in ret_fps:
+            chunks_with_fp = []
+            # TODO: Make this more pythonic
+            for ch in chunks:
+                if ch.metadata["rel_path"] == fp:
+                    chunks_with_fp.append(ch)
+            ret_chunks.append(chunks_with_fp[0])  # Append chunk with given fp
+        return ret_chunks
