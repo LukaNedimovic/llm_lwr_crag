@@ -3,27 +3,13 @@
 from itertools import zip_longest
 
 import pandas as pd
+import pipeline as pl
 from box import Box  # type: ignore
-from data_processing import (
-    chunk_docs,
-    load_docs,
-    make_text_chunker,
-    preprocess_eval,
-)
 from handlers.auto import AbstractDB, AbstractLLM
+from langchain.globals import get_verbose, set_verbose
+from utils import logger, parse_args
 
 # Turn off Langchain verbose mode
-from langchain.globals import get_verbose, set_verbose
-from rag import setup_generation, setup_retrieval
-from utils import (
-    download_repo,
-    gen_extensions,
-    logger,
-    parse_args,
-    parse_eval,
-    path,
-)
-
 set_verbose(False)
 is_verbose = get_verbose()
 
@@ -134,24 +120,11 @@ def train(args: Box) -> None:
     Returns:
         None
     """
-    # Download GitHub repository and parse the evaluation data
-    download_repo(args.repo_url, path(args.repo_dir), force_download=False)
-    eval_df = parse_eval(path(args.eval_path))  # noqa: F841
-    preprocess_eval(eval_df, args.retriever.eval)
+    eval_df = pl.make_repo_and_eval(args)
+    docs, chunks = pl.load_docs_and_chunk(args)
 
-    # Set up retrieval pipeline
-    # Document loading and chunking
-    extensions = gen_extensions(
-        path(args.languages_path),
-        extensions_path=path(args.extensions_path),
-        force=True,
-    )
-    docs = load_docs(path(args.repo_dir), extensions, args.retriever.metadata)
-    text_chunker = make_text_chunker(args.retriever.chunking)
-    chunks = chunk_docs(docs, text_chunker)
-
-    ret_db_vec, ret_db_bm25, ret_rerank = setup_retrieval(args, docs, chunks)
-    gen_llm = setup_generation(args)
+    ret_db_vec, ret_db_bm25, ret_rerank = pl.setup_retrieval(args, docs, chunks)
+    gen_llm = pl.setup_generation(args)
 
     # Evaluate the dataset
     avg_recall = eval(eval_df, ret_db_vec, ret_db_bm25, ret_rerank, gen_llm)
