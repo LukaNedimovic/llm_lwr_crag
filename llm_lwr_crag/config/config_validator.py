@@ -155,7 +155,7 @@ class RetrieverConfig(BaseModel):
     chunking: RetrieverChunkingConfig
     db: RetrieverDBConfig
     llm: LLMConfig
-    bm25: Optional[bool] = False
+    bm25: Optional[Literal["docs", "chunks"]] = None
     rerank: Optional[LLMConfig] = None
 
 

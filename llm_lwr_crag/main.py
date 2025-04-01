@@ -167,8 +167,12 @@ def train(args: Box) -> None:
     ret_db_bm25 = None
     if args.retriever.bm25:
         ret_db_bm25 = AutoDB.from_args(Box({"provider": "bm25"}))
-        ret_db_bm25.add_documents(docs)
-        # ret_db_bm25.add_documents(chunks)
+        if args.retriever.bm25 == "docs":
+            print("Adding docs into BM25...")
+            ret_db_bm25.add_documents(docs)
+        else:
+            print("Adding chunks into BM25...")
+            ret_db_bm25.add_documents(chunks)
 
     # Answer generation using LLM
     if args.generator:
