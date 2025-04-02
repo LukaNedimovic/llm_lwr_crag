@@ -40,7 +40,7 @@ DEFAULT_ARGS = Box(
             "llm": {
                 "provider": "hf",
                 # General API
-                "api_key": "your-api-key",
+                "api_key": None,
                 # Huggingface
                 "base_model": "sentence-transformers/all-MiniLM-L6-v2",
                 "device": "cuda",
@@ -88,8 +88,7 @@ REQUIRED_ARGS = Box(
             "llm": {
                 "provider": {
                     "hf": ["base_model", "device"],
-                    "openai": ["api_key", "model_name"],
-                    "google": ["api_key", "model_name"],
+                    "openai": ["model_name"],
                 },
             },
         },

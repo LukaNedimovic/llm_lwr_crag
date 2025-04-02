@@ -1,3 +1,4 @@
+import os
 from typing import List
 
 from langchain.schema import Document, HumanMessage
@@ -22,15 +23,26 @@ class OpenAIHandler(AbstractLLM):
         self.rerank_msg = parse_txt(path(args.rerank_msg))
         self.generate_msg = parse_txt(path(args.generate_msg))
 
+        # Set up api key
+        self.api_key = args.api_key
+        if args.api_key is None:
+            env_key = os.environ.get("OPENAI_API_KEY", None)
+            if env_key:
+                args.api_key = env_key
+            else:
+                raise ValueError(
+                    "OPENAI_API_KEY not provided in .env, nor in config files"
+                )
+
         self.use_case = args.use_case
         if self.use_case == "embedding":
             self.model = OpenAIEmbeddings(
-                openai_api_key=args.api_key,
+                openai_api_key=self.api_key,
                 model=self.model_name,
             )
         elif self.use_case == "generation" or self.use_case == "reranking":
             self.model = ChatOpenAI(
-                openai_api_key=args.api_key,
+                openai_api_key=self.api_key,
                 model=self.model_name,
                 temperature=0,
                 max_tokens=200,

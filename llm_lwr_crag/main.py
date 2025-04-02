@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
 
 
+import os
+
 import pipeline as pl
 from box import Box  # type: ignore
+from dotenv import load_dotenv
 from langchain.globals import get_verbose, set_verbose
 from rag import RAG
+from utils import path  # For variable expansion
 from utils import logger, parse_args
+
+# Load .env file, located in DOTENV_PATH env variable
+load_dotenv(path(os.environ.get("DOTENV_PATH")))
 
 # Turn off Langchain verbose mode
 set_verbose(False)
