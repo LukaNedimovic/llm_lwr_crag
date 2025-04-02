@@ -1,4 +1,4 @@
-from typing import Union
+from typing import List, Union
 
 from box import Box
 from handlers.auto import AutoLLM
@@ -13,6 +13,18 @@ llm_augment = None
 
 
 def gen_summary(doc: Document, metadata_args: Box) -> None:
+    """
+    Generate LLM summary for the given document.
+    Modifies document metadata and content in-place.
+    Content is modified by prepending the summary to the original content.
+
+    Args:
+        doc (Document): Document to generate LLM summary of.
+        metadata_args (Box)
+
+    Returns:
+        None
+    """
     # Check whether it is the first time instantiating the LLM for summary
     # If so, instantiate it and keep it cached
     global llm_summary
@@ -29,11 +41,29 @@ def gen_summary(doc: Document, metadata_args: Box) -> None:
     )
 
 
-def gen_code_structure(documents: Union[Document, list[Document]], metadata_args: Box):
-    if isinstance(documents, Document):
-        documents = [documents]
+def gen_code_structure(
+    docs: Union[Document, List[Document]], metadata_args: Box
+) -> None:
+    """
+    Attempt generating code structure for the given documents.
+    In case of a single document passed, format it into a list, for easier
+    implementation.
+    Modifies document metadata and content in-place.
+    Content is modified by prepending the concatenated list of function and
+    class names.
 
-    for doc in documents:
+    Args:
+        docs (Union[Document, List[Document]]): Document(s) to generate code
+            structure for.
+        metadata_args (Box)
+
+    Returns:
+        None
+    """
+    if isinstance(docs, Document):
+        docs = [docs]
+
+    for doc in docs:
         functions, classes = CodeParser.parse_code(
             doc.page_content,
             doc.metadata["ext"],
@@ -51,6 +81,16 @@ def gen_code_structure(documents: Union[Document, list[Document]], metadata_args
 
 
 def augment_query(query: str, metadata_args: Box) -> str:
+    """
+    Use an LLM to augment given query, for better retrieval.
+
+    Args:
+        query (str): Query to augment with keywords and relevant file names.
+        metadata_args (Box)
+
+    Returns:
+        str: Augmented query.
+    """
     # Check whether it is the first time instantiating the LLM for summary
     # If so, instantiate it and keep it cached
     global llm_augment
@@ -69,7 +109,18 @@ MD_PC_TO_FUNC = {
 }
 
 
-def add_doc_metadata(doc: Document, metadata_args: Box):
+def add_doc_metadata(doc: Document, metadata_args: Box) -> None:
+    """
+    Augment the document with pieces of metadata.
+    Each metadata piece is mapped to a relevant function, used for its generation.
+
+    Args:
+        doc (Document): Document whose metadata to enrich.
+        metadata_args (Box)
+
+    Returns:
+        None
+    """
     for md_pc in metadata_args.list:
         md_gen_func = MD_PC_TO_FUNC.get(md_pc, None)
         if md_gen_func is None:

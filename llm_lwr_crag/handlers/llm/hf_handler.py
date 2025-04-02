@@ -72,9 +72,6 @@ class HFHandler(AbstractLLM):
             raise ValueError(f"Invalid Huggingface model use case: {self.use_case}")
 
     def rerank(self, query: str, chunks: List[Document]) -> List[Document]:
-        """
-        Rerank the documents based on the given query.
-        """
         query_chunk_pairs = [
             [query for _ in range(len(chunks))],
             [ch.page_content for ch in chunks],

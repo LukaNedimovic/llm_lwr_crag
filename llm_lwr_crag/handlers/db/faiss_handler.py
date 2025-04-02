@@ -22,17 +22,10 @@ class FAISSHandler(AbstractDB):
         )
 
     def add_documents(self, chunks: List[Document]) -> None:
-        """
-        Store embeddings in the FAISS database.
-        """
         logger.info(f"Adding embeddings into the {self.collection_name} (FAISS)...")
         self.db.add_documents(chunks)
         logger.info("Successfully added embeddings into the FAISS database!")
 
     def query(self, query: str, k: int = 10) -> List[Tuple[str, float]]:
-        """
-        Query the FAISS database for files.
-        This method performs a similarity search in FAISS and returns the file paths.
-        """
         ret_chunks = self.db.similarity_search(query, k=k)
         return ret_chunks

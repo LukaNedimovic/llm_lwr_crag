@@ -10,6 +10,15 @@ from .metadata import add_doc_metadata
 
 
 def extract_text(file_path: Path) -> str:
+    """
+    Try extracting the text from the file at `file_path` (local).
+
+    Args:
+        file_path (Path): Path to a local file.
+
+    Returns:
+        str: Textual content of given file.
+    """
     try:
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             return f.read()
@@ -67,7 +76,24 @@ def process_file(
 def load_docs(
     repo_dir: Path, extensions: List[str], metadata_args: Box
 ) -> List[Document]:
-    documents = []
+    """
+    Load documents from given directory.
+    Only include documents whose extension is within `extensions` list.
+    Processes files in parallel, for quicker loading.
+
+    Args:
+        repo_dir (Path): Path to local directory, containing the downloaded
+            GitHub repository.
+        extensions (List[str]): List of allowed extensions to load.
+            Otherwise, simply skip the document.
+        metadata_args (Box)
+
+    Returns:
+         docs (List[Document]): List of loaded documents, with their content
+            and other relevant metadata loaded into `langchain.schema.Document`
+            object.
+    """
+    docs = []
     file_paths = [
         Path(root) / file for root, _, files in os.walk(repo_dir) for file in files
     ]
@@ -82,6 +108,6 @@ def load_docs(
         for future in as_completed(future_to_file):
             doc = future.result()
             if doc:
-                documents.append(doc)
+                docs.append(doc)
 
-    return documents
+    return docs

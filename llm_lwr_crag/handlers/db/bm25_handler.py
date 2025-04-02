@@ -23,9 +23,6 @@ class BM25Handler(AbstractDB):
         return text.lower().split()
 
     def add_documents(self, chunks: List[Document]) -> None:
-        """
-        Store embeddings in the BM25 index.
-        """
         if self.db is None:
             logger.info("Building the M25 index...")
 
@@ -36,9 +33,6 @@ class BM25Handler(AbstractDB):
             logger.info("Sucessfully created BM25 index from given files.")
 
     def query(self, query: str, k: int = 10) -> List[Tuple[str, float]]:
-        """
-        Query the BM25 index for files.
-        """
         tok_query = self.tokenize(query)
         bm25_scores = self.db.get_scores(tok_query)
 

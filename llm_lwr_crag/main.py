@@ -33,7 +33,9 @@ def train(args: Box) -> None:
     Returns:
         None
     """
-    # Download repo, parse evaluation data
+    # Download repo and parse evaluation data
+    # Repo is not being returned since it is downloaded to local
+    # Evaluation dataset is wrapped into a `pandas.DataFrame` object
     eval_df = pl.make_repo_and_eval(args)
     docs, chunks = pl.load_docs_and_chunk(args)  # Load and chunk documents
     rag = RAG.from_args(args, docs, chunks)  # Set up RAG with given docs / chunks

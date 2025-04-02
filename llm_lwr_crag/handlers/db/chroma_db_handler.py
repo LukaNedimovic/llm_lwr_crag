@@ -16,17 +16,10 @@ class ChromaDBHandler(AbstractDB):
         )
 
     def add_documents(self, chunks: List[Document]) -> None:
-        """
-        Store embeddings in the Chroma database.
-        """
         logger.info(f"Adding embeddings into the {self.collection_name} (ChromeDB)...")
         self.db.add_documents(chunks)
         logger.info("Sucessfully added embeddings into the database!")
 
     def query(self, query: str, k: int = 10) -> List[Tuple[str, float]]:
-        """
-        Query the Chroma database for files.
-        This modified version returns both the file paths and their similarity scores.
-        """
         ret_chunks = self.db.similarity_search(query, k=k)
         return ret_chunks

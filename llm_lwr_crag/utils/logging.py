@@ -53,8 +53,26 @@ def log_tc(
     ret_fps: List[str],
     ret_relevant: List[str],
     recall: float,
-    gen_ans: str,
+    gen_ans: Union[str, None],
 ) -> None:
+    """
+    Log the outcome of a single test case.
+
+    Args:
+        tc_id (int): Test case ID.
+        num_tc (int): Total number of test cases.
+        query (str): User query.
+        ground_truth_fps (List[str]): List of ground truth files from the
+            evaluation dataset.
+        ret_fps (List[str]): List of retrieved file paths.
+        ret_relevant (List[str]): List of file paths retrieved, that match the
+            ground truth values.
+        recall (float): Recall@K metric
+        gen_ans (Union[None, str]): If applicable, LLM generated answer.
+
+    Returns:
+        None
+    """
     logger.info(f"Test: {tc_id} / {num_tc}")
     logger.info(f"Query: {query}")
 

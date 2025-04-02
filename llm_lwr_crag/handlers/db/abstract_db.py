@@ -24,7 +24,21 @@ class AbstractDB(ABC):
         return []
 
     @staticmethod
-    def filter_by_fp(all_ret_chunks, top_k: int = 10) -> Tuple[List[str], List[str]]:
+    def filter_by_fp(
+        all_ret_chunks: List[Document], top_k: int = 10
+    ) -> Tuple[List[str], List[Document]]:
+        """
+        Filter returned chunks by file paths. Take at most K unique file paths.
+
+        Args:
+            all_ret_chunks (List[Document]): List of all retrieved chunks.
+            top_k (int): Return at most `top_k` unique file paths.
+
+        Returns:
+            Tuple[List[str], List[Document]]: A tuple consisting of:
+                (1) ret_fps (List[str]): List of unique, retrieved file paths
+                (2) ret_chunks (List[Document]): List of accompanying chunks.
+        """
         ret_chunks: List[str] = []
         ret_fps: Set[str] = set()
         for rc in all_ret_chunks:
@@ -42,6 +56,19 @@ class AbstractDB(ABC):
         smooth_k: int = 60,
         top_k: int = 10,
     ) -> List[str]:
+        """
+        Implement standard Reciprocal Rank Fusion (RRF).
+        Read more about it herE: https://en.wikipedia.org/wiki/Mean_reciprocal_rank
+
+        Args:
+            ret_fps_1 (List[str]): First list of retrieved file paths.
+            ret_fps_2 (List[str]): Second list of retrieved file paths.
+            smooth_k (int): Smoothing factor.
+            top_k (int): Take at most `top_k` files.
+
+        Returns:
+            List[str]: Top-K list, merged from the `ret_fps_1` and `ret_fps_2`.
+        """
         scores: defaultdict = defaultdict(float)
 
         def rrf_make_scores(ret_files, smooth_k: int = 60):
@@ -59,7 +86,22 @@ class AbstractDB(ABC):
         return [file for file, _ in ranked_files][:top_k]
 
     @staticmethod
-    def rbf(ret_fps_1: List[str], ret_fps_2: List[str], p=0.8, top_k: int = 10):
+    def rbf(
+        ret_fps_1: List[str], ret_fps_2: List[str], p: float = 0.8, top_k: int = 10
+    ):
+        """
+        Implement Reciprocal Rank-Based Fusion.
+        Formula: sum(p ** rank)
+
+        Args:
+            ret_fps_1 (List[str]): First list of retrieved file paths.
+            ret_fps_2 (List[str]): Second list of retrieved file paths.
+            p (float): Smoothing factor.
+            top_k (int): Take at most `top_k` files.
+
+        Returns:
+            List[str]: Top-K list, merged from the `ret_fps_1` and `ret_fps_2`.
+        """
         scores: defaultdict = defaultdict(float)
 
         def rbf_make_scores(ret_files, p):
@@ -77,7 +119,18 @@ class AbstractDB(ABC):
         return [file for file, _ in ranked_files][:top_k]
 
     @staticmethod
-    def fetch_by_fp(ret_fps: List[str], chunks: List[Document]):
+    def fetch_by_fp(ret_fps: List[str], chunks: List[Document]) -> List[Document]:
+        """
+        Fetch the chunks from the given file paths.
+
+        Args:
+            ret_fps (List[str]): List of retrieved file paths.
+            chunks (List[Documeent]): List of relevant chunks.
+
+        Returns:
+            ret_chunks (List[Document]): List of chunks matched from their
+                file paths.
+        """
         ret_chunks: List[Document] = []
         for fp in ret_fps:
             chunks_with_fp = []
