@@ -20,6 +20,17 @@ class Retriever:
         self.rerank = ret_rerank
 
     def __call__(self, query: str, k: int = 10) -> Tuple[List[str], List[Document]]:
+        """
+        Retrieve top-K files for the given query.
+
+        Args:
+            query (str): Query for which to retrieve relevant file paths / chunks.
+            k (int): Retrieve top-k files.
+
+        Returns:
+            Tuple[List[str], List[Document]]: List of top-K file paths (fps)
+                and chunks.
+        """
         # Query the database to get top-K relevant files
         # Corrective factor of 4 used as an example - can be changed
         # as it is a hyperparameter
@@ -59,6 +70,17 @@ class Generator:
         self.llm = gen_llm
 
     def __call__(self, query: str, ret_chunks: List[Document]) -> Union[str, None]:
+        """
+        Generate the answer for the given query, based on the retrieved chunks.
+
+        Args:
+            query (str): Query to generate answer off of.
+            ret_chunks (List[Document]): List of retrieved chunks.
+
+        Returns:
+            Union[str, None]: If generator is defined, return the textual answer.
+                If not, return None.
+        """
         return self.llm.generate(query, ret_chunks) if self.llm else None
 
 
@@ -73,7 +95,23 @@ class RAG:
         self.retriever = Retriever(ret_db_vec, ret_db_bm25, ret_rerank)
         self.generator = Generator(gen_llm)
 
-    def __call__(self, query: str, k: int = 10):
+    def __call__(
+        self, query: str, k: int = 10
+    ) -> Tuple[List[str], List[Document], Union[str, None]]:
+        """
+        Perform a single retrieval + generation task.
+
+        Args:
+            query (str): Query for which to retrieve relevant file paths / chunks.
+            k (int): Retrieve top-k files.
+
+        Returns:
+            Tuple[List[str], List[Document], str]: A tuple consisting of:
+                (1) ret_fps (List[str]): retrieved file paths
+                (2) ret_chunks (List[Document]): retrieved chunks
+                (3) gen_ans (Union[str, None]): Generated, textual answer to the query.
+                    If not defined, will return None.
+        """
         # Retrieve top K chunks
         ret_fps, ret_chunks = self.retriever(query, k)
         # Generate an answer based on retrieved chunks
@@ -85,6 +123,20 @@ class RAG:
     def recall(
         ret_fps: List[str], ground_truth_fps: Set[str]
     ) -> Tuple[float, Set[str]]:
+        """
+        Implement a standard recall metric.
+
+        Args:
+            ret_fps (List[str]): List of retrieved, uniqe file paths
+            ground_truth_fps (Set[str]): Set of ground truth files,
+                from evaluation dataset.
+
+        Returns:
+            Tuple[float, Set[str]]: A tuple consisting of:
+                (1) recall (float)
+                (2) ret_relevant (Set[str]): Intersection of ground truth files
+                    and retrieved files.
+        """
         ret_relevant = ground_truth_fps.intersection(ret_fps)
 
         # Calculate Recall@K and add it to the total_recall for future calculation
@@ -93,6 +145,17 @@ class RAG:
 
     @staticmethod
     def from_args(args: Box, docs: List[Document], chunks: List[Document]):
+        """
+        Initialize `RAG` object given arguments, and documents / chunks.
+
+        Args:
+            args (Box): A wrapped-up parsed YAML arguments.
+            docs (List[Document])
+            chunks (List[Document])
+
+        Returns:
+            RAG
+        """
         ret_db_vec, ret_db_bm25, ret_rerank = pl.setup_retrieval(args, docs, chunks)
         gen_llm = pl.setup_generation(args)
         return RAG(ret_db_vec, ret_db_bm25, ret_rerank, gen_llm)
