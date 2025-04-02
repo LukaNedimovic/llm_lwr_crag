@@ -1,5 +1,6 @@
 import logging
-from typing import Union
+from itertools import zip_longest
+from typing import List, Union
 
 __all__ = ["logger", "setup_logger", "toggle_logger"]
 logger = logging.getLogger(__name__)
@@ -42,3 +43,29 @@ def toggle_logger(status: Union[bool, int]):
             logging.disable(logging.CRITICAL)
     elif isinstance(status, int):
         logger.setLevel(status)
+
+
+def log_tc(
+    tc_id: int,
+    num_tc: int,
+    query: str,
+    ground_truth_fps: List[str],
+    ret_fps: List[str],
+    ret_relevant: List[str],
+    recall: float,
+    gen_ans: str,
+) -> None:
+    logger.info(f"Test: {tc_id} / {num_tc}")
+    logger.info(f"Query: {query}")
+
+    # Compare the ground truth values and the retrieved files
+    for gnd, ret in zip_longest(ground_truth_fps, ret_fps, fillvalue=""):
+        logger.info(f"{str(gnd):<80} {str(ret)}")
+
+    logger.info(
+        (
+            f"Common: {len(ret_relevant)} / {len(ground_truth_fps)} "
+            f"{recall * 100:.2f}"
+        )
+    )
+    print(f"Answer: {gen_ans}")

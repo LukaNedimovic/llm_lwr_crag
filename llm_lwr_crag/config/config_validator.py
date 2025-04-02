@@ -157,6 +157,7 @@ class RetrieverConfig(BaseModel):
     llm: LLMConfig
     bm25: Optional[Literal["docs", "chunks"]] = None
     rerank: Optional[LLMConfig] = None
+    k: Optional[int] = 10
 
 
 class ConfigValidator(BaseModel):

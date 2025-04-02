@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-from itertools import zip_longest
 
 import pandas as pd
 import pipeline as pl
 from box import Box  # type: ignore
-from handlers.auto import AbstractDB, AbstractLLM
 from langchain.globals import get_verbose, set_verbose
+from rag import RAG
 from utils import logger, parse_args
+from utils.logging import log_tc
 
 # Turn off Langchain verbose mode
 set_verbose(False)
@@ -15,11 +15,8 @@ is_verbose = get_verbose()
 
 
 def eval(
+    rag: RAG,
     eval_df: pd.DataFrame,
-    ret_db_vec: AbstractDB,
-    ret_db_bm25: AbstractDB,
-    ret_rerank: AbstractLLM,
-    gen_llm: AbstractLLM,
     k: int = 10,
 ) -> float:
     """
@@ -36,63 +33,28 @@ def eval(
     """
     total_recall = 0.0
 
-    for test_id, row in eval_df.iterrows():
+    for tc_id, row in eval_df.iterrows():
         query = row["question"]
-
-        # Query the database to get top-K relevant files
-        # Corrective factor of 4 used as an example - can be changed
-        # as it is a hyperparameter
-        ret_chunks = ret_db_vec.query(query, k=4 * k)
-        ret_fps = None
-
-        # Apply BM25, if applicable
-        # Hybrid search with BM25 is done based on file paths,
-        # therefore file paths must be filtered out first,
-        # and then the chunks
-        if ret_db_bm25:
-            ret_chunks_bm25 = ret_db_bm25.query(query, k=k // 2)
-            ret_fps_bm25, ret_chunks_bm25 = AbstractDB.filter_by_fp(
-                ret_chunks_bm25, top_k=k // 2
-            )
-
-            ret_fps, ret_chunks = AbstractDB.filter_by_fp(ret_chunks, top_k=k)
-            ret_fps = AbstractDB.rbf(ret_fps, ret_fps_bm25)
-            ret_chunks = AbstractDB.fetch_by_fp(ret_fps, ret_chunks + ret_chunks_bm25)
-
-        # Apply reranking, if applicable
-        # Reranking is done based on the file content
-        # Filter out the files after reranking them
-        if ret_rerank:
-            ret_chunks = ret_rerank.rerank(query, ret_chunks)
-            ret_fps, ret_chunks = AbstractDB.filter_by_fp(ret_chunks, top_k=k)
-
-        # In case over pure vector search, make sure to filter out file paths
-        if ret_fps is None:
-            ret_fps, ret_chunks = AbstractDB.filter_by_fp(ret_chunks, top_k=k)
-        # Calculate Recall@K for the question
         ground_truth_fps = set(row["files"])
-        relevant_retrieved = ground_truth_fps.intersection(ret_fps)
 
-        # Calculate Recall@K and add it to the total_recall for future calculation
-        recall = (
-            len(relevant_retrieved) / len(ground_truth_fps) if ground_truth_fps else 0.0
-        )
+        # Retrieve relevant file paths and chunks
+        ret_fps, ret_chunks, gen_ans = rag(query, k)
+
+        # Calculate Recall@K for the query
+        recall, ret_relevant = RAG.recall(ret_fps, ground_truth_fps)
         total_recall += recall
 
-        logger.info(f"Test: {test_id + 1} / {len(eval_df)}")
-        logger.info(f"Query: {query}")
-        # Compare the ground truth values and the retrieved files
-        for gnd, ret in zip_longest(ground_truth_fps, ret_fps, fillvalue=""):
-            logger.info(f"{str(gnd):<80} {str(ret)}")
-        logger.info(
-            (
-                f"Common: {len(relevant_retrieved)} / {len(ground_truth_fps)} "
-                f"{recall * 100:.2f}"
-            )
+        # Log the test case
+        log_tc(
+            tc_id=tc_id,
+            num_tc=len(eval_df),
+            query=query,
+            ground_truth_fps=ground_truth_fps,
+            ret_fps=ret_fps,
+            ret_relevant=ret_relevant,
+            recall=recall,
+            gen_ans=gen_ans,
         )
-
-        if gen_llm:
-            logger.info(f"Answer: {gen_llm.generate(query, ret_chunks)}")
 
     # Average Recall@K across all questions
     avg_recall = total_recall / len(eval_df)
@@ -120,14 +82,21 @@ def train(args: Box) -> None:
     Returns:
         None
     """
+    # Download repo, parse evaluation data
     eval_df = pl.make_repo_and_eval(args)
+
+    # Load documents and chunk them
     docs, chunks = pl.load_docs_and_chunk(args)
 
+    # Setup RAG
     ret_db_vec, ret_db_bm25, ret_rerank = pl.setup_retrieval(args, docs, chunks)
     gen_llm = pl.setup_generation(args)
 
-    # Evaluate the dataset
-    avg_recall = eval(eval_df, ret_db_vec, ret_db_bm25, ret_rerank, gen_llm)
+    # Create a RAG pipeline
+    rag = RAG(ret_db_vec, ret_db_bm25, ret_rerank, gen_llm)
+
+    # Evaluate RAG on dataset
+    avg_recall = eval(rag, eval_df, k=args.retriever.k)
     logger.info(f"{avg_recall * 100:.2f}")
 
 
