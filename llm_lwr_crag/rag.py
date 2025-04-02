@@ -1,7 +1,11 @@
 from typing import List, Set, Tuple, Union
 
+import pandas as pd
+import pipeline as pl
+from box import Box
 from handlers import AbstractDB, AbstractLLM
 from langchain.schema import Document
+from utils.logging import log_tc
 
 
 class Retriever:
@@ -86,3 +90,51 @@ class RAG:
         # Calculate Recall@K and add it to the total_recall for future calculation
         recall = len(ret_relevant) / len(ground_truth_fps) if ground_truth_fps else 0.0
         return recall, ret_relevant
+
+    @staticmethod
+    def from_args(args: Box, docs: List[Document], chunks: List[Document]):
+        ret_db_vec, ret_db_bm25, ret_rerank = pl.setup_retrieval(args, docs, chunks)
+        gen_llm = pl.setup_generation(args)
+        return RAG(ret_db_vec, ret_db_bm25, ret_rerank, gen_llm)
+
+    def eval(self, eval_df: pd.DataFrame, k: int = 10) -> float:
+        """
+        Evaluate the system with Recall@K metric.
+
+        Args:
+            ret_db_vec (AbstractDBHandler): Database to query.
+            eval_df (pd.DataFrame): Evaluation data.
+            k (int = 10): Top-K files to be retrieved
+
+        Returns:
+            avg_recall (float): Average Recall@K (defaults to Recall@10) over the
+            evaluation dataset.
+        """
+        total_recall = 0.0
+
+        for tc_id, row in eval_df.iterrows():
+            query = row["question"]
+            ground_truth_fps = set(row["files"])
+
+            # Retrieve relevant file paths and chunks
+            ret_fps, ret_chunks, gen_ans = self(query, k)
+
+            # Calculate Recall@K for the query
+            recall, ret_relevant = RAG.recall(ret_fps, ground_truth_fps)
+            total_recall += recall
+
+            # Log the test case
+            log_tc(
+                tc_id=tc_id,
+                num_tc=len(eval_df),
+                query=query,
+                ground_truth_fps=ground_truth_fps,
+                ret_fps=ret_fps,
+                ret_relevant=ret_relevant,
+                recall=recall,
+                gen_ans=gen_ans,
+            )
+
+        # Average Recall@K across all questions
+        avg_recall = total_recall / len(eval_df)
+        return avg_recall
