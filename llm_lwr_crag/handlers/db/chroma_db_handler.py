@@ -15,6 +15,9 @@ class ChromaDBHandler(AbstractDB):
             embedding_function=args.emb_func,
         )
 
+    def __str__(self):
+        return "ChromaDB"
+
     def add_documents(self, chunks: List[Document]) -> None:
         logger.info(f"Adding embeddings into the {self.collection_name} (ChromeDB)...")
         self.db.add_documents(chunks)

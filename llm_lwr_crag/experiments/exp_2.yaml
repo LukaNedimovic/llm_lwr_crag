@@ -1,0 +1,31 @@
+exp_name: "exp_2"
+
+ui: true
+mode: train
+
+repo_url: "https://github.com/viarotel-org/escrcpy.git"
+repo_dir: "$DATA_DIR/escrcpy"
+eval_path: "$DATA_DIR/escrcpy-commits-generated.json"
+
+retriever:
+  metadata:
+    list: ["code_structure"]
+  chunking:
+    type: "RecursiveCharacterTextSplitter"
+    chunk_size: 1200
+    chunk_overlap: 120
+  db:
+    provider: "chromadb"
+    chromadb_path: "$PERSIST_DIR/chromadb/"
+    collection_name: "test_collection"
+  llm:
+    provider: "openai"
+    model_name: "text-embedding-3-large"
+
+generator:
+  provider: "openai"
+  model_name: "gpt-4o-mini"
+  use_case: "generation"
+
+languages_path: "$DATA_DIR/languages.yml"
+extensions_path: "$DATA_DIR/extensions.txt"

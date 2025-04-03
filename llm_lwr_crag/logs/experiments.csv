@@ -1,0 +1,25 @@
+exp,,RecursiveCharacterTextSplitter,1200,120,None,ChromaDB,None,None,OpenAI(gpt-4o-mini),0.7607843137254902,10
+exp,,RecursiveCharacterTextSplitter,1200,120,,ChromaDB,None,None,OpenAI(gpt-4o-mini),0.7154411764705882,10
+exp,,RecursiveCharacterTextSplitter,1200,120,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,None,None,OpenAI(gpt-4o-mini),0.8404411764705882,10
+exp,,RecursiveCharacterTextSplitter,1500,150,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,None,None,OpenAI(gpt-4o-mini),0.8325980392156864,10
+exp,,RecursiveCharacterTextSplitter,800,80,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,None,None,OpenAI(gpt-4o-mini),0.8588235294117647,10
+exp,,RecursiveCharacterTextSplitter,1200,120,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,BM25,None,OpenAI(gpt-4o-mini),0.8492647058823529,10
+exp,,RecursiveCharacterTextSplitter,1200,120,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,None,None,OpenAI(gpt-4o-mini),0.8575980392156863,10
+exp,,RecursiveCharacterTextSplitter,1200,120,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,BM25,None,OpenAI(gpt-4o-mini),0.7950980392156863,10
+exp,"provider=OpenAI, llm=gpt-4o-mini",RecursiveCharacterTextSplitter,1200,120,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,BM25,None,OpenAI(gpt-4o-mini),0.7571078431372549,10
+exp,"provider=OpenAI, llm=gpt-4o-mini",RecursiveCharacterTextSplitter,1500,150,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,BM25,None,OpenAI(gpt-4o-mini),0.6855392156862746,10
+exp,,RecursiveCharacterTextSplitter,1200,120,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,None,None,OpenAI(gpt-4o-mini),0.8624999999999999,10
+exp,,RecursiveCharacterTextSplitter,1200,120,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,None,None,OpenAI(gpt-4o-mini),0.8551470588235294,10
+
+exp_1,,RecursiveCharacterTextSplitter,1200,120,216,733,None,ChromaDB,None,None,OpenAI(gpt-4o-mini),0.7313725490196078,10
+exp_2,,RecursiveCharacterTextSplitter,1200,120,216,752,,ChromaDB,None,None,OpenAI(gpt-4o-mini),0.7154411764705882,10
+exp_3,,RecursiveCharacterTextSplitter,1200,120,216,891,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,None,None,OpenAI(gpt-4o-mini),0.8624999999999999,10
+exp_4,,RecursiveCharacterTextSplitter,1500,150,216,711,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,None,None,OpenAI(gpt-4o-mini),0.8473039215686275,10
+exp_5,,RecursiveCharacterTextSplitter,800,80,216,1335,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,None,None,OpenAI(gpt-4o-mini),0.836764705882353,10
+exp_6,,RecursiveCharacterTextSplitter,1200,120,216,891,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,BM25,None,OpenAI(gpt-4o-mini),0.7529411764705882,10
+exp_7,,RecursiveCharacterTextSplitter,1200,120,216,890,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,None,OpenAI(gpt-4o-mini),OpenAI(gpt-4o-mini),0.8661764705882353,10
+exp_8,,RecursiveCharacterTextSplitter,1200,120,216,888,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,BM25,OpenAI(gpt-4o-mini),OpenAI(gpt-4o-mini),0.7865196078431371,10
+exp_9,"provider=OpenAI, llm=gpt-4o-mini",RecursiveCharacterTextSplitter,1200,120,216,894,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,BM25,OpenAI(gpt-4o-mini),OpenAI(gpt-4o-mini),0.6683823529411765,10
+exp_11,,RecursiveCharacterTextSplitter,1200,120,216,733,None,ChromaDB,BM25,Huggingface(cross-encoder/ms-marco-MiniLM-L12-v2),OpenAI(gpt-4o-mini),0.618627450980392,10
+exp_12,,RecursiveCharacterTextSplitter,1200,120,216,893,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,None,Huggingface(cross-encoder/ms-marco-MiniLM-L12-v2),OpenAI(gpt-4o-mini),0.8147058823529412,10
+exp_13,"provider=OpenAI, llm=gpt-4o-mini",RecursiveCharacterTextSplitter,1200,120,216,890,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,None,Huggingface(cross-encoder/ms-marco-MiniLM-L12-v2),OpenAI(gpt-4o-mini),0.7811274509803923,10

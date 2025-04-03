@@ -12,6 +12,9 @@ class BM25Handler(AbstractDB):
     def __init__(self, args):
         self.db = None
 
+    def __str__(self):
+        return "BM25"
+
     def tokenize(self, text_or_doc: Union[str, Document]) -> List[str]:
         """
         Lowercase and split the text.
@@ -24,7 +27,7 @@ class BM25Handler(AbstractDB):
 
     def add_documents(self, chunks: List[Document]) -> None:
         if self.db is None:
-            logger.info("Building the M25 index...")
+            logger.info("Building the BM25 index...")
 
             tokenized_chunks = [self.tokenize(chunk) for chunk in chunks]
             self.db = BM25Okapi(tokenized_chunks)

@@ -15,6 +15,8 @@ SUPPORTED_RETRIEVER_LLM = ["hf", "openai"]
 
 DEFAULT_ARGS = Box(
     {
+        "exp_name": "default_exp",
+        "log_path": "$LOGS_DIR/experiments.csv",
         "retriever": {
             "eval": {
                 "augment_query": None,

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-
 import os
 
 import pipeline as pl
@@ -9,7 +8,7 @@ from dotenv import load_dotenv
 from langchain.globals import get_verbose, set_verbose
 from rag import RAG
 from utils import path  # For variable expansion
-from utils import logger, parse_args
+from utils import log_res, logger, parse_args
 
 # Load .env file, located in DOTENV_PATH env variable
 load_dotenv(path(os.environ.get("DOTENV_PATH")))
@@ -48,7 +47,30 @@ def train(args: Box) -> None:
     rag = RAG.from_args(args, docs, chunks)  # Set up RAG with given docs / chunks
 
     # Evaluate RAG on dataset
+    # log_path is the place of the local log file
     avg_recall = rag.eval(eval_df, k=args.retriever.k)
+
+    # Log if applicable
+    log_res(
+        log_path=path(args.log_path),
+        log_dict={
+            "exp_name": args.exp_name,
+            "eval": args.retriever.get("eval", None),
+            "ret_chunker": args.retriever.chunking.type,
+            "chunk_size": args.retriever.chunking.chunk_size,
+            "chunk_overlap": args.retriever.chunking.chunk_overlap,
+            "num_docs": str(len(docs)),
+            "num_chunks": str(len(chunks)),
+            "metadata": args.retriever.metadata,
+            "ret_vec_db": str(rag.retriever.vec_db),
+            "ret_db_bm25": str(rag.retriever.bm25),
+            "ret_rerank": str(rag.retriever.rerank),
+            "gen_llm": str(rag.generator.llm),
+            "avg_recall": avg_recall,
+            "k": args.retriever.k,
+        },
+    )
+
     logger.info(f"{avg_recall * 100:.2f}")
 
 

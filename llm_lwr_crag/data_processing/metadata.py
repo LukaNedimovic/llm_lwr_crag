@@ -121,6 +121,9 @@ def add_doc_metadata(doc: Document, metadata_args: Box) -> None:
     Returns:
         None
     """
+    if metadata_args is None:
+        return
+
     for md_pc in metadata_args.list:
         md_gen_func = MD_PC_TO_FUNC.get(md_pc, None)
         if md_gen_func is None:

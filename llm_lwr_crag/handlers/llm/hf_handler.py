@@ -32,13 +32,13 @@ class HFHandler(AbstractLLM):
             )
         elif self.use_case == "generation":
             model = AutoModelForSeq2SeqLM.from_pretrained(self.base_model)
-            tokenizer = AutoTokenizer.from_pretrained(self.base_model)
+            self.tokenizer = AutoTokenizer.from_pretrained(self.base_model)
 
             # Setup a simple pipeline and create the wrapped model
             pipe = pipeline(
                 task="text2text-generation",
                 model=model,
-                tokenizer=tokenizer,
+                tokenizer=self.tokenizer,
                 max_new_tokens=512,
                 do_sample=False,
                 repetition_penalty=1.03,
@@ -70,6 +70,9 @@ class HFHandler(AbstractLLM):
             )
         else:
             raise ValueError(f"Invalid Huggingface model use case: {self.use_case}")
+
+    def __str__(self):
+        return f"Huggingface({self.base_model})"
 
     def rerank(self, query: str, chunks: List[Document]) -> List[Document]:
         query_chunk_pairs = [

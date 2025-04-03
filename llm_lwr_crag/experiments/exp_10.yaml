@@ -1,0 +1,48 @@
+exp_name: "exp_10"
+
+ui: true
+mode: train
+
+repo_url: "https://github.com/viarotel-org/escrcpy.git"
+repo_dir: "$DATA_DIR/escrcpy"
+eval_path: "$DATA_DIR/escrcpy-commits-generated.json"
+
+retriever:
+  eval:
+    augment_query:
+      provider: "openai"
+      model_name: "gpt-4o-mini"
+      use_case: "generation"
+  metadata:
+    list: ["llm_summary", "code_structure"]
+    llm_summary:
+      provider: "openai"
+      model_name: "gpt-4o-mini"
+      use_case: "generation"
+      split_text_system_msg: "$PROMPTS_DIR/split_text_sys_default.txt"
+      split_text_human_msg: "$PROMPTS_DIR/split_text_hmn_default.txt"
+  chunking:
+    type: "RecursiveCharacterTextSplitter"
+    chunk_size: 1500
+    chunk_overlap: 150
+  db:
+    provider: "chromadb"
+    chromadb_path: "$PERSIST_DIR/chromadb/"
+    collection_name: "test_collection"
+  llm:
+    provider: "openai"
+    model_name: "text-embedding-3-large"
+  bm25: "chunks"
+  rerank:
+    provider: "hf"
+    base_model: "sentence-transformers/all-MiniLM-L6-v2"
+    device: "cuda"
+    use_case: "reranking"
+
+generator:
+  provider: "openai"
+  model_name: "gpt-4o-mini"
+  use_case: "generation"
+
+languages_path: "$DATA_DIR/languages.yml"
+extensions_path: "$DATA_DIR/extensions.txt"

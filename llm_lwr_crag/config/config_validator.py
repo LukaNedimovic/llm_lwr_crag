@@ -151,7 +151,7 @@ class RetrieverConfig(BaseModel):
     """
 
     eval: Optional[EvalConfig] = None
-    metadata: MetadataConfig
+    metadata: Optional[MetadataConfig] = None
     chunking: RetrieverChunkingConfig
     db: RetrieverDBConfig
     llm: LLMConfig
@@ -164,6 +164,9 @@ class ConfigValidator(BaseModel):
     """
     Top-level YAML configuration validator.
     """
+
+    exp_name: Optional[str] = DEFAULT_ARGS.exp_name
+    log_path: Optional[str] = DEFAULT_ARGS.log_path
 
     mode: Literal["train"]  # type: ignore
 

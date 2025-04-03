@@ -11,11 +11,11 @@ from utils.logging import log_tc
 class Retriever:
     def __init__(
         self,
-        ret_db_vec: AbstractDB,
+        ret_vec_db: AbstractDB,
         ret_db_bm25: AbstractDB,
         ret_rerank: AbstractLLM,
     ):
-        self.db_vec = ret_db_vec
+        self.vec_db = ret_vec_db
         self.bm25 = ret_db_bm25
         self.rerank = ret_rerank
 
@@ -34,7 +34,7 @@ class Retriever:
         # Query the database to get top-K relevant files
         # Corrective factor of 4 used as an example - can be changed
         # as it is a hyperparameter
-        ret_chunks = self.db_vec.query(query, k=4 * k)
+        ret_chunks = self.vec_db.query(query, k=4 * k)
         ret_fps = None
 
         # Apply BM25, if applicable
@@ -87,12 +87,12 @@ class Generator:
 class RAG:
     def __init__(
         self,
-        ret_db_vec: AbstractDB,
+        ret_vec_db: AbstractDB,
         ret_db_bm25: AbstractDB,
         ret_rerank: AbstractLLM,
         gen_llm: AbstractLLM,
     ):
-        self.retriever = Retriever(ret_db_vec, ret_db_bm25, ret_rerank)
+        self.retriever = Retriever(ret_vec_db, ret_db_bm25, ret_rerank)
         self.generator = Generator(gen_llm)
 
     def __call__(
@@ -156,16 +156,16 @@ class RAG:
         Returns:
             RAG
         """
-        ret_db_vec, ret_db_bm25, ret_rerank = pl.setup_retrieval(args, docs, chunks)
+        ret_vec_db, ret_db_bm25, ret_rerank = pl.setup_retrieval(args, docs, chunks)
         gen_llm = pl.setup_generation(args)
-        return RAG(ret_db_vec, ret_db_bm25, ret_rerank, gen_llm)
+        return RAG(ret_vec_db, ret_db_bm25, ret_rerank, gen_llm)
 
     def eval(self, eval_df: pd.DataFrame, k: int = 10) -> float:
         """
         Evaluate the system with Recall@K metric.
 
         Args:
-            ret_db_vec (AbstractDBHandler): Database to query.
+            ret_vec_db (AbstractDBHandler): Database to query.
             eval_df (pd.DataFrame): Evaluation data.
             k (int = 10): Top-K files to be retrieved
 

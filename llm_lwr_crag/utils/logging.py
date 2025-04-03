@@ -1,3 +1,4 @@
+import csv
 import logging
 from itertools import zip_longest
 from typing import List, Union
@@ -87,3 +88,52 @@ def log_tc(
         )
     )
     print(f"Answer: {gen_ans}")
+
+
+def log_res(
+    log_path: str,
+    log_dict: dict,
+):
+    # Format query augmentation logging
+    eval = log_dict["eval"]
+    if eval is None:
+        aug_query_log = ""
+    else:
+        aug_query = eval.get("augment_query", None)
+        if aug_query:
+            if aug_query.get("provider") == "openai":
+                aug_query_log = (
+                    f"provider=OpenAI, llm={aug_query.get('model_name', None)}"
+                )
+            else:
+                aug_query_log = (
+                    f"provider=OpenAI, llm={aug_query.get('base_model', None)}"
+                )
+        else:
+            aug_query_log = "None"
+    log_dict["eval"] = aug_query_log
+
+    # Format metadata logging
+    metadata = log_dict["metadata"]
+    metadata_log = ""
+    if metadata:
+        llm_summary = metadata.get("llm_summary", None)
+        if llm_summary:
+            if llm_summary.get("provider") == "openai":
+                metadata_log = (
+                    f"{metadata.get('list', 'no metadata')} | "
+                    f"llm_summary: (provider=OpenAI, llm={llm_summary.get('model_name', None)})"  # noqa: E501
+                )
+            else:
+                metadata_log = (
+                    f"{metadata.get('list', 'no metadata')} | "
+                    f"llm_summary: (provider=OpenAI, llm={llm_summary.get('base_model', None)})"  # noqa: E501
+                )
+    else:
+        metadata_log = "None"
+    log_dict["metadata"] = metadata_log
+
+    log_entry = log_dict.values()
+    with open(log_path, mode="a", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow(log_entry)

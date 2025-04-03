@@ -21,6 +21,9 @@ class FAISSHandler(AbstractDB):
             index_to_docstore_id={},
         )
 
+    def __str__(self):
+        return "FAISS"
+
     def add_documents(self, chunks: List[Document]) -> None:
         logger.info(f"Adding embeddings into the {self.collection_name} (FAISS)...")
         self.db.add_documents(chunks)

@@ -50,6 +50,9 @@ class OpenAIHandler(AbstractLLM):
         else:
             raise ValueError(f"Invalid OpenAI model use case: {self.use_case}")
 
+    def __str__(self):
+        return f"OpenAI({self.model_name})"
+
     def rerank(self, query: str, chunks: List[Document]) -> List[Document]:
         scored_chunks = []
         for chunk in chunks:
