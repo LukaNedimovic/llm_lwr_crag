@@ -30,6 +30,7 @@ export PERSIST_DIR="${SRC_ROOT}/persist/"
 export PROMPTS_DIR="${SRC_ROOT}/prompts/"
 export EXPERIMENTS_DIR="${SRC_ROOT}/experiments/"
 export LOGS_DIR="${SRC_ROOT}/logs/"
+export DOCS_DIR="${PROJECT_ROOT}/docs/"
 export DOTENV_PATH="${PROJECT_ROOT}/.env"
 
 export PYTHONPATH=$SRC_ROOT
