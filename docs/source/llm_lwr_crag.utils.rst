@@ -4,10 +4,10 @@ llm\_lwr\_crag.utils package
 Submodules
 ----------
 
-llm\_lwr\_crag.utils.argparse module
-------------------------------------
+llm\_lwr\_crag.utils.const module
+---------------------------------
 
-.. automodule:: llm_lwr_crag.utils.argparse
+.. automodule:: llm_lwr_crag.utils.const
    :members:
    :show-inheritance:
    :undoc-members:
@@ -20,10 +20,26 @@ llm\_lwr\_crag.utils.download module
    :show-inheritance:
    :undoc-members:
 
+llm\_lwr\_crag.utils.gen\_extensions module
+-------------------------------------------
+
+.. automodule:: llm_lwr_crag.utils.gen_extensions
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 llm\_lwr\_crag.utils.logging module
 -----------------------------------
 
 .. automodule:: llm_lwr_crag.utils.logging
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+llm\_lwr\_crag.utils.parse module
+---------------------------------
+
+.. automodule:: llm_lwr_crag.utils.parse
    :members:
    :show-inheritance:
    :undoc-members:
