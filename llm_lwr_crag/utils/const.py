@@ -43,11 +43,9 @@ DEFAULT_ARGS = Box(
                 "provider": "hf",
                 # General API
                 "api_key": None,
-                # Huggingface
-                "base_model": "sentence-transformers/all-MiniLM-L6-v2",
                 "device": "cuda",
+                "model_name": "sentence-transformers/all-MiniLM-L6-v2",
                 # OpenAI
-                "model_name": "text-embedding-ada-002",
                 "batch_size": 16,
                 "num_threads": 12,
                 "use_case": "embedding",
@@ -60,7 +58,7 @@ DEFAULT_ARGS = Box(
             },
             "rerank": {
                 "provider": "hf",
-                "base_model": "cross-encoder/msmarco-MiniLM-L6-cos-v5",
+                "model_name": "cross-encoder/msmarco-MiniLM-L6-cos-v5",
                 "use_case": "reranking",
             },
         },
@@ -89,7 +87,7 @@ REQUIRED_ARGS = Box(
             },
             "llm": {
                 "provider": {
-                    "hf": ["base_model", "device"],
+                    "hf": ["model_name", "device"],
                     "openai": ["model_name"],
                 },
             },

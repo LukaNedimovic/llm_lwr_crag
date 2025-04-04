@@ -74,8 +74,140 @@ def train(args: Box) -> None:
     logger.info(f"{avg_recall * 100:.2f}")
 
 
+
+import gradio as gr
+
+def test_load_github_repo(url):
+    """Simulate loading a GitHub repository (for now, just returns confirmation)."""
+    return f"✅ Loaded GitHub Repo: {url}"
+
+def test_process_query(provider, model, query):
+    """Simulate an AI processing the query."""
+    if not provider or not model:
+        return "⚠️ Please enter an AI provider and model name."
+    return f"🔍 Processing query '{query}' using {provider} - {model}..."
+
+def train_ui():
+    with gr.Blocks(css="""
+        #load_button {
+            width: 60px !important;
+            height: 100% !important; /* Fills container */
+            min-width: 60px !important;
+            max-width: 60px !important;
+            min-height: 60px !important;
+            max-height: 100% !important;
+            font-size: 14px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border-radius: 8px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0; /* Prevents shrinking */
+        }      
+        
+        /* URL input - now visible and properly sized */
+        #github_url {
+            border: none !important;
+            box-shadow: none !important;
+            flex-grow: 1;
+            padding: 12px !important;
+            background: transparent !important;
+        }
+        
+        /* Centered title */
+        .title {
+            text-align: center !important;
+            width: 100% !important;
+            margin-bottom: 20px !important;
+        }
+        
+        /* Main container */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-bottom: 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Query input - pure and centered */
+        #query_input {
+            position: fixed !important;
+            bottom: 20px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 25% !important;
+            min-width: 300px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: 1px solid var(--border-color-primary) !important;
+            border-radius: 4px !important;
+        }
+    """) as app:
+        with gr.Column(elem_classes="main-container"):
+            # Centered title
+            gr.Markdown("## 🤖 LLM Listwise Reranker for CodeRAG", elem_classes="title")
+            
+            # URL row with Load button
+            with gr.Row(elem_classes="url-row"):
+                with gr.Column(elem_classes="url-input-container"):
+                    github_url = gr.Textbox(label="GitHub Repository URL")
+                load_button = gr.Button("Load", elem_id="load_button")
+            
+            gr.Markdown("### Retrieval")
+            
+            with gr.Row():
+                with gr.Column():
+                    gr.Markdown("#### Chunking Strategy")
+                    with gr.Row():
+                        chunk_size = gr.Textbox(label="Chunk Size", interactive=True)
+                        chunk_overlap = gr.Textbox(label="Chunk Overlap", interactive=True)
+                
+                with gr.Column():
+                    gr.Markdown("#### Embedding Model")
+                    with gr.Row():
+                        emb_model_provider = gr.Textbox(label="Embedding Model Provider", interactive=True)
+                        emb_model_name = gr.Textbox(label="Embeding Model Name", interactive=True)
+                        
+            with gr.Row():
+                with gr.Column():
+                    gr.Markdown("#### Metadata")    
+                    with gr.Row():
+                        code_structure = gr.Checkbox(label="Code Structure")
+                    with gr.Row():
+                        llm_summary_provider = gr.Textbox(label="Summary LLM Provider", interactive=True)
+                        llm_summary_model_name = gr.Textbox(label="Summary LLM Model Name", interactive=True)
+                        
+                with gr.Column():
+                    gr.Markdown("#### Database")    
+                    with gr.Row():
+                        db = gr.Dropdown(label="Database", choices=["ChromaDB", "FAISS"], interactive=True)
+
+            gr.HTML("<hr>")
+            
+            query_output = gr.Textbox(label="Output", interactive=False)
+            
+            # Pure query input
+            query_input = gr.Textbox(
+                elem_id="query_input",
+                placeholder="Type your query...",
+                show_label=False,
+                container=False
+            )
+
+        # load_button.click(test_load_github_repo, inputs=github_url, outputs=query_output)
+        # query_input.submit(test_process_query, inputs=[ai_provider, model_name, query_input], outputs=query_output)
+
+    app.launch()
+    
+
 if __name__ == "__main__":
     args = parse_args()
 
     if args.mode == "train":
-        train(args)
+        if args.ui:
+            train_ui()
+        else:
+            train(args)

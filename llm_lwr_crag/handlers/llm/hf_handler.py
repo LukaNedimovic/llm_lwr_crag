@@ -21,18 +21,18 @@ from .abstract_llm import AbstractLLM
 
 class HFHandler(AbstractLLM):
     def __init__(self, args):
-        self.base_model = args.base_model
+        self.model_name = args.model_name
         self.device = "cuda" if args.device and torch.cuda.is_available() else "cpu"
 
         self.use_case = args.use_case
         if self.use_case == "embedding":
             self.model = HuggingFaceEmbeddings(
-                model_name=self.base_model,
+                model_name=self.model_name,
                 model_kwargs={"device": self.device},
             )
         elif self.use_case == "generation":
-            model = AutoModelForSeq2SeqLM.from_pretrained(self.base_model)
-            self.tokenizer = AutoTokenizer.from_pretrained(self.base_model)
+            model = AutoModelForSeq2SeqLM.from_pretrained(self.model_name)
+            self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
 
             # Setup a simple pipeline and create the wrapped model
             pipe = pipeline(
@@ -51,7 +51,7 @@ class HFHandler(AbstractLLM):
             self.summarize_msg = parse_txt(path(args.summarize_msg))
             self.augment_msg = parse_txt(path(args.augment_msg))
         elif self.use_case == "reranking":
-            config = AutoConfig.from_pretrained(self.base_model)
+            config = AutoConfig.from_pretrained(self.model_name)
             if not (
                 config.architectures
                 and any(
@@ -72,7 +72,7 @@ class HFHandler(AbstractLLM):
             raise ValueError(f"Invalid Huggingface model use case: {self.use_case}")
 
     def __str__(self):
-        return f"Huggingface({self.base_model})"
+        return f"Huggingface({self.model_name})"
 
     def rerank(self, query: str, chunks: List[Document]) -> List[Document]:
         query_chunk_pairs = [

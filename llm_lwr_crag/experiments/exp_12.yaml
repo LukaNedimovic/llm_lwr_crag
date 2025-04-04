@@ -29,7 +29,7 @@ retriever:
     model_name: "text-embedding-3-large"
   rerank:
     provider: "hf"
-    base_model: "cross-encoder/ms-marco-MiniLM-L12-v2"
+    model_name: "cross-encoder/ms-marco-MiniLM-L12-v2"
     device: "cuda"
     use_case: "reranking"
 

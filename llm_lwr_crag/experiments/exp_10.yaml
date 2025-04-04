@@ -35,7 +35,7 @@ retriever:
   bm25: "chunks"
   rerank:
     provider: "hf"
-    base_model: "sentence-transformers/all-MiniLM-L6-v2"
+    model_name: "sentence-transformers/all-MiniLM-L6-v2"
     device: "cuda"
     use_case: "reranking"
 

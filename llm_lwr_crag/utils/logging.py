@@ -101,14 +101,7 @@ def log_res(
     else:
         aug_query = eval.get("augment_query", None)
         if aug_query:
-            if aug_query.get("provider") == "openai":
-                aug_query_log = (
-                    f"provider=OpenAI, llm={aug_query.get('model_name', None)}"
-                )
-            else:
-                aug_query_log = (
-                    f"provider=OpenAI, llm={aug_query.get('base_model', None)}"
-                )
+            aug_query_log = f"provider={aug_query.get('provider')}, llm={aug_query.get('model_name', None)}"
         else:
             aug_query_log = "None"
     log_dict["eval"] = aug_query_log
@@ -119,16 +112,10 @@ def log_res(
     if metadata:
         llm_summary = metadata.get("llm_summary", None)
         if llm_summary:
-            if llm_summary.get("provider") == "openai":
-                metadata_log = (
-                    f"{metadata.get('list', 'no metadata')} | "
-                    f"llm_summary: (provider=OpenAI, llm={llm_summary.get('model_name', None)})"  # noqa: E501
-                )
-            else:
-                metadata_log = (
-                    f"{metadata.get('list', 'no metadata')} | "
-                    f"llm_summary: (provider=OpenAI, llm={llm_summary.get('base_model', None)})"  # noqa: E501
-                )
+            metadata_log = (
+                f"{metadata.get('list', 'no metadata')} | "
+                f"llm_summary: (provider={llm_summary.get('provider')}, llm={llm_summary.get('model_name', None)})"  # noqa: E501
+            )
     else:
         metadata_log = "None"
     log_dict["metadata"] = metadata_log

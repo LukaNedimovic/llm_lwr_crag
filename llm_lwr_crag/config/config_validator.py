@@ -12,7 +12,6 @@ class LLMConfig(BaseModel):
     provider: Literal["hf", "openai"] = DEFAULT_ARGS.retriever.llm.provider
 
     # Huggingface related arguments
-    base_model: Optional[str] = DEFAULT_ARGS.retriever.llm.base_model
     device: Optional[str] = DEFAULT_ARGS.retriever.llm.device
 
     # OpenAI related arguments
@@ -169,6 +168,7 @@ class ConfigValidator(BaseModel):
     log_path: Optional[str] = DEFAULT_ARGS.log_path
 
     mode: Literal["train"]  # type: ignore
+    ui: Optional[bool] = False
 
     repo_url: Optional[str]
     repo_dir: Optional[str]
