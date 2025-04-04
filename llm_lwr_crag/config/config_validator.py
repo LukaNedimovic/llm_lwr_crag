@@ -83,7 +83,7 @@ class EvalConfig(BaseModel):
     augment_query: Optional[LLMConfig] = DEFAULT_ARGS.retriever.eval.augment_query
 
 
-class RetrieverChunkingConfig(BaseModel):
+class ChunkingConfig(BaseModel):
     """
     LLM Chunking YAML configuration validator.
     """
@@ -115,7 +115,7 @@ class RetrieverChunkingConfig(BaseModel):
         return values
 
 
-class RetrieverDBConfig(BaseModel):
+class DBConfig(BaseModel):
     """
     Retriever (DB) YAML configuration validator.
     """
@@ -151,8 +151,8 @@ class RetrieverConfig(BaseModel):
 
     eval: Optional[EvalConfig] = None
     metadata: Optional[MetadataConfig] = None
-    chunking: RetrieverChunkingConfig
-    db: RetrieverDBConfig
+    chunking: ChunkingConfig
+    db: DBConfig
     llm: LLMConfig
     bm25: Optional[Literal["docs", "chunks"]] = None
     rerank: Optional[LLMConfig] = None
