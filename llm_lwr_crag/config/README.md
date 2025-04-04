@@ -8,7 +8,7 @@ In the table below, you may find the top-level overview of possible arguments:
 | Argument Name                           | Description | Value Range   | Default Value |
 |-----------------------------------------|-------------|---------------|---------------|
 | exp_name                                | Experiment name |  | |
-| mode                                    | Mode to run the project in | `eval` (for evaluation on dataset), "ui" (for interactive) | `eval`|
+| mode                                    | Mode to run the project in | "eval" (for evaluation on dataset), "ui" (for interactive) | `eval`|
 | repo_url                                | GitHub repository URL| Any accessible GitHub repository. | https://github.com/viarotel-org/escrcpy |
 | repo_dir                                | Directory to download the repository to |               | |
 | eval_path                               | Path to evaluation dataset            |               | |
