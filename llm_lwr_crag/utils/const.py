@@ -9,7 +9,7 @@ __all__ = [
     "LLM_SUMMARY_REQUIRED",
 ]
 
-SUPPORTED_MODE = ["train"]
+SUPPORTED_MODE = ["eval"]
 SUPPORTED_DB = ["chromadb"]
 SUPPORTED_RETRIEVER_LLM = ["hf", "openai"]
 
@@ -70,7 +70,8 @@ DEFAULT_ARGS = Box(
 REQUIRED_ARGS = Box(
     {
         "mode": {
-            "train": ["repo_url", "repo_dir", "eval_path"],
+            "eval": ["repo_url", "repo_dir", "eval_path"],
+            "ui": [],
         },
         "retriever": {
             "chunking": {

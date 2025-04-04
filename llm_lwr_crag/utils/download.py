@@ -14,6 +14,7 @@ def download_repo(
     repo_dir: Path,
     force_download: bool = False,
     log: Union[bool, int] = True,
+    ui: bool = False,
 ):
     """
     Clone a GitHub repository to a target directory.
@@ -33,11 +34,13 @@ def download_repo(
                 shutil.rmtree(repo_dir)
             else:
                 logger.info(f"Repository already cloned at: {repo_dir}.")
-                return
+                return f"ℹ️ Repository already cloned at: {repo_dir}."
 
         os.makedirs(repo_dir, exist_ok=True)
 
         subprocess.run(["git", "clone", repo_url, repo_dir], check=True)
+
         logger.info(f"Repository cloned successfully to {repo_dir}")
+        return f"✅ Repository cloned successfully to: {repo_dir}!"
     except subprocess.CalledProcessError as e:
         logger.fatal(f"Failed to clone repository: {e}")

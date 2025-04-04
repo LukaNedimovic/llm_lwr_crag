@@ -167,8 +167,7 @@ class ConfigValidator(BaseModel):
     exp_name: Optional[str] = DEFAULT_ARGS.exp_name
     log_path: Optional[str] = DEFAULT_ARGS.log_path
 
-    mode: Literal["train"]  # type: ignore
-    ui: Optional[bool] = False
+    mode: Literal["eval", "ui"]  # type: ignore
 
     repo_url: Optional[str]
     repo_dir: Optional[str]

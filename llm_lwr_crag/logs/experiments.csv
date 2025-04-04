@@ -1,16 +1,3 @@
-exp,,RecursiveCharacterTextSplitter,1200,120,None,ChromaDB,None,None,OpenAI(gpt-4o-mini),0.7607843137254902,10
-exp,,RecursiveCharacterTextSplitter,1200,120,,ChromaDB,None,None,OpenAI(gpt-4o-mini),0.7154411764705882,10
-exp,,RecursiveCharacterTextSplitter,1200,120,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,None,None,OpenAI(gpt-4o-mini),0.8404411764705882,10
-exp,,RecursiveCharacterTextSplitter,1500,150,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,None,None,OpenAI(gpt-4o-mini),0.8325980392156864,10
-exp,,RecursiveCharacterTextSplitter,800,80,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,None,None,OpenAI(gpt-4o-mini),0.8588235294117647,10
-exp,,RecursiveCharacterTextSplitter,1200,120,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,BM25,None,OpenAI(gpt-4o-mini),0.8492647058823529,10
-exp,,RecursiveCharacterTextSplitter,1200,120,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,None,None,OpenAI(gpt-4o-mini),0.8575980392156863,10
-exp,,RecursiveCharacterTextSplitter,1200,120,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,BM25,None,OpenAI(gpt-4o-mini),0.7950980392156863,10
-exp,"provider=OpenAI, llm=gpt-4o-mini",RecursiveCharacterTextSplitter,1200,120,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,BM25,None,OpenAI(gpt-4o-mini),0.7571078431372549,10
-exp,"provider=OpenAI, llm=gpt-4o-mini",RecursiveCharacterTextSplitter,1500,150,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,BM25,None,OpenAI(gpt-4o-mini),0.6855392156862746,10
-exp,,RecursiveCharacterTextSplitter,1200,120,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,None,None,OpenAI(gpt-4o-mini),0.8624999999999999,10
-exp,,RecursiveCharacterTextSplitter,1200,120,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,None,None,OpenAI(gpt-4o-mini),0.8551470588235294,10
-
 exp_1,,RecursiveCharacterTextSplitter,1200,120,216,733,None,ChromaDB,None,None,OpenAI(gpt-4o-mini),0.7313725490196078,10
 exp_2,,RecursiveCharacterTextSplitter,1200,120,216,752,,ChromaDB,None,None,OpenAI(gpt-4o-mini),0.7154411764705882,10
 exp_3,,RecursiveCharacterTextSplitter,1200,120,216,891,"['llm_summary', 'code_structure'] | llm_summary: (provider=OpenAI, llm=gpt-4o-mini)",ChromaDB,None,None,OpenAI(gpt-4o-mini),0.8624999999999999,10

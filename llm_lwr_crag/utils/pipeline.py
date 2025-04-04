@@ -51,7 +51,9 @@ def load_docs_and_chunk(args: Box) -> Tuple[List[Document], List[Document]]:
         extensions_path=path(args.extensions_path),
         force=True,
     )
+
     docs = load_docs(path(args.repo_dir), extensions, args.retriever.metadata)
+
     text_chunker = make_text_chunker(args.retriever.chunking)
     chunks = chunk_docs(docs, text_chunker)
 

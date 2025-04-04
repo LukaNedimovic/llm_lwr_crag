@@ -1,7 +1,6 @@
 exp_name: "exp_2"
 
-ui: true
-mode: train
+mode: "eval"
 
 repo_url: "https://github.com/viarotel-org/escrcpy.git"
 repo_dir: "$DATA_DIR/escrcpy"

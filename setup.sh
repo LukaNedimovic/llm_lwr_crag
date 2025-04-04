@@ -32,5 +32,7 @@ export EXPERIMENTS_DIR="${SRC_ROOT}/experiments/"
 export LOGS_DIR="${SRC_ROOT}/logs/"
 export DOCS_DIR="${PROJECT_ROOT}/docs/"
 export DOTENV_PATH="${PROJECT_ROOT}/.env"
+export MODE_PATH="${SRC_ROOT}/mode/"
+export GRADIO_CSS_PATH="$MODE_PATH/ui/gradio.css"
 
 export PYTHONPATH=$SRC_ROOT
