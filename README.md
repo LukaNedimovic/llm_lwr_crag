@@ -25,26 +25,7 @@ By implementing methods from parents classes, it is easy to integrate new techno
 To run the experiments, we provide `ConfigValidator` - `pydantic`-based YAML configuration validator, that was chosen instead of `argparse`, for better modularity and precise argument control.
 Main parts of the configuration are `retriever` and `generator`, responsible for setting up `RAG` pipeline. Other, general arguments, can be provided aside from these two key parts.
 
-In the table below, you may find the overview of possible arguments:
-
-| Argument Name                           | Description | Value Range   | Default Value |
-|-----------------------------------------|-------------|---------------|---------------|
-| exp_name                                | Experiment name |  | |
-| mode                                    | Mode to run the program in | `train` (for training / evaluation) | `train`|
-| repo_url                                | GitHub repository URL| Any accessible GitHub repository. | https://github.com/viarotel-org/escrcpy |
-| repo_dir                                | Directory to download the repository to |               | |
-| eval_path                               | Path to evaluation dataset            |               | |
-| retriever                               | Complete retriever setup            |               | |
-| &nbsp;eval                              |             |               | |
-| &nbsp;&nbsp;augment_query (`LLMConfig`) | Query augmentation            |               | |
-| &nbsp;metadata                          | Metadata generation            |               | |
-| &nbsp;chunking                          | Chunking strategy            |               | |
-| &nbsp;db                                | (Vector) database             |               | |
-| &nbsp;llm (`LLMConfig`)                 | Embedding model            |               | |
-| &nbsp;rerank (`LLMConfig`)              | Reranker             |               | |
-| generator (`LLMConfig`)                 | Generator LLM            |               | |
-| languages_path                          | Path to languages file     |               | |
-| extensions_path                         | Path to save generated extensions to             |               | |
+Since configuration was built to be modular, for complete set of arguments, please check: [Configuration README](./llm_lwr_crag/config/README.md).
 
 ## 🚀 Quickstart
 **LLM_LWR_CRAG** uses `conda` for environment management. To set up the environment, i.e. create it and install the dependencies, the setup script is provided:
