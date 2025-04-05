@@ -102,7 +102,7 @@ dependencies:
   - zlib=1.2.13=h5eee18b_1
   - zstd=1.5.6=hc292b87_0
   - pip:
-      - aiofiles==22.0
+      - aiofiles
       - aiohappyeyeballs==2.6.1
       - aiohttp==3.11.14
       - aiosignal==1.3.2
@@ -299,7 +299,6 @@ dependencies:
       - typing-inspection==0.4.0
       - tzdata==2025.1
       - unstructured==0.17.2
-      - unstructured-client==0.31.3
       - uvicorn==0.34.0
       - uvloop==0.21.0
       - virtualenv==20.29.3
