@@ -9,6 +9,7 @@ from box import Box  # type: ignore
 from config.config_validator import ConfigValidator
 from pydantic import ValidationError
 
+from .logging import logger
 from .path import path
 
 __all__ = ["parse_args"]
@@ -65,7 +66,7 @@ def parse_config(path: Path) -> Union[None, Box]:
             config = ConfigValidator(**config)
             return Box(config.model_dump())
         except ValidationError as e:
-            print(f"Validation error: {e}")
+            logger.info(f"Validation error: {e}")
             return None
 
 

@@ -36,8 +36,6 @@ def ui__download_repo_and_setup_rag(github_url, args: Box):
     Returns:
         None
     """
-    print(type(github_url))
-
     # Download GitHub repo and update the status bar accordingly
     download_repo_gen = download_repo(
         github_url,

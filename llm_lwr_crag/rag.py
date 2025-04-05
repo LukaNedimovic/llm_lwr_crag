@@ -113,12 +113,9 @@ class RAG:
                     If not defined, will return None.
         """
         # Retrieve top K chunks
-        print("ret")
         ret_fps, ret_chunks = self.retriever(query, k)
-        print("ret done")
         # Generate an answer based on retrieved chunks
         gen_ans = self.generator(query, ret_chunks)
-        print("gen done")
         return ret_fps, ret_chunks, gen_ans
 
     @staticmethod

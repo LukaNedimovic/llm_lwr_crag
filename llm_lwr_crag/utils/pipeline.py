@@ -10,7 +10,7 @@ from data_processing import (
 )
 from handlers import AbstractDB, AbstractLLM, AutoDB, AutoLLM
 from langchain.schema import Document
-from utils import download_repo, gen_extensions, parse_eval, path
+from utils import download_repo, gen_extensions, logger, parse_eval, path
 
 
 def make_repo_and_eval(args: Box) -> pd.DataFrame:
@@ -117,10 +117,10 @@ def setup_retrieval(
     if args.retriever.bm25:
         ret_db_bm25 = AutoDB.from_args(Box({"provider": "bm25"}))
         if args.retriever.bm25 == "docs":
-            print("Adding docs into BM25...")
+            logger.info("Adding docs into BM25...")
             ret_db_bm25.add_documents(docs)
         else:
-            print("Adding chunks into BM25...")
+            logger.info("Adding chunks into BM25...")
             ret_db_bm25.add_documents(chunks)
 
     # Reranking LLM setup

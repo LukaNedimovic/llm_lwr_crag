@@ -53,7 +53,6 @@ def process_file(
 
     # Filter out files with extensions not of interest
     if ext not in extensions:
-        # print("Skipping file:", file_path, "because of extension:", file_path.suffix)
         return None
 
     # Extract text, and, if present, construct the file with relevant metadata

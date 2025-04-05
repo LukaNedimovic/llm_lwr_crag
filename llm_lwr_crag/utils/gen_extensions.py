@@ -4,6 +4,8 @@ from typing import Set
 
 import yaml
 
+from .logging import logger
+
 
 def load_extensions(extensions_path: Path) -> Set[str]:
     """
@@ -23,11 +25,11 @@ def load_extensions(extensions_path: Path) -> Set[str]:
                 extension = line.strip()
                 if extension:
                     extensions.add(extension)
-        print(f"Extensions have been loaded from {extensions_path}")
+        logger.info(f"Extensions have been loaded from {extensions_path}")
     except FileNotFoundError:
-        print(f"Error: {extensions_path} not found.")
+        logger.error(f"Error: {extensions_path} not found.")
     except Exception as e:
-        print(f"An error occurred: {e}")
+        logger.error(f"An error occurred: {e}")
 
     return extensions
 
@@ -43,7 +45,7 @@ def save_extensions(extensions: Set[str], extensions_path: Path):
     with open(extensions_path, "w") as ext_file:
         for ext in extensions:
             ext_file.write(f"{ext}\n")
-    print(f"Extensions have been saved to {extensions_path}")
+    logger.info(f"Extensions have been saved to {extensions_path}")
 
 
 def add_std_additional_extensible(extensions: Set[str]):

@@ -87,7 +87,7 @@ def log_tc(
             f"{recall * 100:.2f}"
         )
     )
-    print(f"Answer: {gen_ans}")
+    logger.info(f"Answer: {gen_ans}")
 
 
 def log_res(
@@ -101,7 +101,7 @@ def log_res(
     else:
         aug_query = eval.get("augment_query", None)
         if aug_query:
-            aug_query_log = f"provider={aug_query.get('provider')}, llm={aug_query.get('model_name', None)}"
+            aug_query_log = f"provider={aug_query.get('provider')}, llm={aug_query.get('model_name', None)}"  # noqa: E501
         else:
             aug_query_log = "None"
     log_dict["eval"] = aug_query_log

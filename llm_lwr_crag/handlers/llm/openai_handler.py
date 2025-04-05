@@ -74,7 +74,6 @@ class OpenAIHandler(AbstractLLM):
             try:
                 score = float(response.content.strip())
             except ValueError:
-                print("gone to 0")
                 score = 0.0  # Default score if parsing fails
             scored_chunks.append((chunk, score))
 
