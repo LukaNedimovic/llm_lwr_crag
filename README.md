@@ -27,6 +27,11 @@ Main parts of the configuration are `retriever` and `generator`, responsible for
 
 Since configuration was built to be modular, for complete set of arguments, please check: [Configuration README](./llm_lwr_crag/config/README.md).
 
+To run a configuration from YAML file, simply provide it to the main file via the `--config` parameter:
+```bash
+./main.py --config path_to_config.yml
+```
+
 ## 🚀 Quickstart
 **LLM_LWR_CRAG** uses `conda` for environment management. To set up the environment, i.e. create it and install the dependencies, the setup script is provided:
 ```bash
@@ -40,7 +45,6 @@ Additionally, to be able to use **OpenAI** API, one must provide the key. It sho
 **LLM_LWR_CRAG** comes with a set of 12 experiments.
 
 Main goal was to perform a meaningful parameter sweep, and check for the most efficient configuration. You may find experiment results here: [Experiment Results Paper](./llm_lwr_crag/experiments/Experiment%20Results%20Paper.pdf).
-
 
 ## 📝 Documentation
 To build the documentation, it is enough to run the `setup.sh` and the `build_docs.sh`:
