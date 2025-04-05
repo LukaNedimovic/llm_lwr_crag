@@ -33,8 +33,10 @@ To run a configuration from YAML file, simply provide it to the main file via th
 ```
 
 ## 🚀 Quickstart
-**LLM_LWR_CRAG** uses `conda` for environment management. To set up the environment, i.e. create it and install the dependencies, the setup script is provided:
+**LLM_LWR_CRAG** uses `conda` for environment management. To clone the repository and set up the environment, i.e. create it and install the dependencies, you may run:
 ```bash
+git clone https://github.com/LukaNedimovic/llm_lwr_crag.git
+cd llm_lwr_crag
 source ./setup.sh
 ```
 `setup.sh` will also export several environment variables, useful for dynamic path creation and, therefore, setting up the configurations for experiments.
