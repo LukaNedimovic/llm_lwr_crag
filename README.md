@@ -37,7 +37,9 @@ source ./setup.sh
 Additionally, to be able to use **OpenAI** API, one must provide the key. It should be set either in the configuration YAML file, or within the `.env`. The latter is encouraged, to make configuration cleaner - check `.env.example`.
 
 ## 🧪 Experiments
-**LLM_LWR_CRAG** comes with a set of 13 experiments. The main goal was to perform a meaningful parameter sweep, and check for the most efficient configuration.
+**LLM_LWR_CRAG** comes with a set of 12 experiments.
+
+Main goal was to perform a meaningful parameter sweep, and check for the most efficient configuration. You may find experiment results here: [Experiment Results Paper](./llm_lwr_crag/experiments/Experiment%20Results%20Paper.pdf).
 
 
 ## 📝 Documentation

@@ -1,4 +1,4 @@
-exp_name: "exp_11"
+exp_name: "exp_12"
 
 mode: "eval"
 
@@ -7,14 +7,14 @@ repo_dir: "$DATA_DIR/escrcpy"
 eval_path: "$DATA_DIR/escrcpy-commits-generated.json"
 
 retriever:
-  # metadata:
-  #   list: ["llm_summary", "code_structure"]
-  #   llm_summary:
-  #     provider: "openai"
-  #     model_name: "gpt-4o-mini"
-  #     use_case: "generation"
-  #     split_text_system_msg: "$PROMPTS_DIR/split_text_sys_default.txt"
-  #     split_text_human_msg: "$PROMPTS_DIR/split_text_hmn_default.txt"
+  metadata:
+    list: ["llm_summary", "code_structure"]
+    llm_summary:
+      provider: "openai"
+      model_name: "gpt-4o-mini"
+      use_case: "generation"
+      split_text_system_msg: "$PROMPTS_DIR/split_text_sys_default.txt"
+      split_text_human_msg: "$PROMPTS_DIR/split_text_hmn_default.txt"
   chunking:
     type: "RecursiveCharacterTextSplitter"
     chunk_size: 1200
@@ -26,7 +26,6 @@ retriever:
   llm:
     provider: "openai"
     model_name: "text-embedding-3-large"
-  bm25: "chunks"
   rerank:
     provider: "hf"
     model_name: "cross-encoder/ms-marco-MiniLM-L12-v2"

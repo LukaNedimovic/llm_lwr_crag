@@ -1,4 +1,4 @@
-exp_name: "exp_12"
+exp_name: "exp_13"
 
 mode: "eval"
 
@@ -7,6 +7,11 @@ repo_dir: "$DATA_DIR/escrcpy"
 eval_path: "$DATA_DIR/escrcpy-commits-generated.json"
 
 retriever:
+  eval:
+    augment_query:
+      provider: "openai"
+      model_name: "gpt-4o-mini"
+      use_case: "generation"
   metadata:
     list: ["llm_summary", "code_structure"]
     llm_summary:
