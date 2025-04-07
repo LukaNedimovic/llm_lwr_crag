@@ -2,8 +2,7 @@ from typing import List, Tuple
 
 from langchain.schema import Document
 from langchain_chroma import Chroma
-from utils.logging import logger
-
+from utils import logger, path
 from .abstract_db import AbstractDB
 
 
@@ -13,6 +12,7 @@ class ChromaDBHandler(AbstractDB):
         self.db = Chroma(
             collection_name=args.collection_name,
             embedding_function=args.emb_func,
+            persist_directory=str(path(args.persist_dir)),
         )
 
     def __str__(self):

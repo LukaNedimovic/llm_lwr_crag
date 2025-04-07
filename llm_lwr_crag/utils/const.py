@@ -36,8 +36,7 @@ DEFAULT_ARGS = Box(
                 # ChromaDB
                 "provider": "chromadb",
                 "collection_name": "default_collection",
-                "chromadb_path": "$PERSIST_DIR/chroma/",
-                "faiss_path": "$PERSIST_DIR/faiss/",
+                "persist_dir": "$PERSIST_DIR/",
             },
             "llm": {
                 "provider": "hf",
@@ -82,8 +81,8 @@ REQUIRED_ARGS = Box(
             },
             "db": {
                 "provider": {
-                    "chromadb": ["chromadb_path"],
-                    "faiss": ["faiss_path"],
+                    "chromadb": [],
+                    "faiss": [],
                 }
             },
             "llm": {

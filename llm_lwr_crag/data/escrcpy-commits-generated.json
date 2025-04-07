@@ -1,0 +1,244 @@
+[
+ {
+  "files": [
+   "src/components/PreferenceForm/components/SelectDisplay/index.vue"
+  ],
+  "question": "How does the SelectDisplay component handle the device options when retrieving display IDs?"
+ },
+ {
+  "files": [
+   "electron/exposes/adb/helpers/index.js",
+   "electron/exposes/adb/index.js"
+  ],
+  "question": "How does the repository handle IPv6 addresses in ADB commands?"
+ },
+ {
+  "files": [
+   "electron/helpers/edger/index.js"
+  ],
+  "question": "How does the edge hiding and snapping mechanism work for a window instance?"
+ },
+ {
+  "files": [
+   "README-CN.md",
+   "README-RU.md",
+   "README.md"
+  ],
+  "question": "Unable to detect device"
+ },
+ {
+  "files": [
+   "src/pages/device/components/MirrorAction/index.vue"
+  ],
+  "question": "What functionality does the component provide for mirroring a device's screen?"
+ },
+ {
+  "files": [
+   "electron/exposes/scrcpy/helper.js",
+   "electron/helpers/store.js",
+   "src/store/preference/helpers/index.js",
+   "src/store/preference/index.js"
+  ],
+  "question": "How is the functionality for storing and managing Scrcpy IP type configuration implemented?"
+ },
+ {
+  "files": [
+   "src/locales/languages/zh-TW.json"
+  ],
+  "question": "What are the common user interface labels and messages implemented in Traditional Chinese?"
+ },
+ {
+  "files": [
+   "src/pages/device/index.vue"
+  ],
+  "question": "How is the wireless connection screen layout managed and updated across the application?"
+ },
+ {
+  "files": [
+   "src/pages/device/components/WirelessGroup/PairDialog/index.vue"
+  ],
+  "question": "How is the wireless pairing dialog functionality implemented?"
+ },
+ {
+  "files": [
+   "src/pages/about/components/SponsorDialog/index.vue"
+  ],
+  "question": "How is the sponsor dialog implemented to display sponsorship images dynamically?"
+ },
+ {
+  "files": [
+   ".github/workflows/release-assets.yml",
+   ".github/workflows/sync-gitee.yml",
+   ".github/workflows/sync-homebrew.yml"
+  ],
+  "question": "What workflows support manual triggering in the repository?"
+ },
+ {
+  "files": [
+   "electron/configs/scrcpy/index.js"
+  ],
+  "question": "How does the application determine the file path for the scrcpy executable based on the operating system and architecture?"
+ },
+ {
+  "files": [
+   ".nvmdrc"
+  ],
+  "question": "What is the purpose of the configuration specified in the version management file?"
+ },
+ {
+  "files": [
+   "src/store/preference/model/video/index.js"
+  ],
+  "question": "What parameters are available for configuring video preferences in the codebase?"
+ },
+ {
+  "files": [
+   "src/dicts/tasks/index.js"
+  ],
+  "question": "How are scheduled task timer types and time units defined in the repository?"
+ },
+ {
+  "files": [
+   ".npmrc.CN"
+  ],
+  "question": "What configuration should domestic users apply to resolve dependency installation issues?"
+ },
+ {
+  "files": [
+   "src/locales/languages/ru-RU.json"
+  ],
+  "question": "What are the available localized string keys and their corresponding Russian translations in the project?"
+ },
+ {
+  "files": [
+   "PRIVACY.md"
+  ],
+  "question": "What is the privacy policy of the app described in the repository?"
+ },
+ {
+  "files": [
+   "src/plugins/element-plus/index.js"
+  ],
+  "question": "How does the plugin integrate custom components with Element Plus features?"
+ },
+ {
+  "files": [
+   "src/icons/svgo.config.js"
+  ],
+  "question": "What configuration is used for optimizing SVG icons in the repository?"
+ },
+ {
+  "files": [
+   ".npmrc"
+  ],
+  "question": "How is the configuration for resolving dependency installation issues specified in the project?"
+ },
+ {
+  "files": [
+   "LICENSE"
+  ],
+  "question": "What license terms and conditions govern the usage, reproduction, and distribution of the repository?"
+ },
+ {
+  "files": [
+   "electron/exposes/scrcpy/index.js"
+  ],
+  "question": "How are ADB and scrcpy paths managed and utilized in the codebase?"
+ },
+ {
+  "files": [
+   "electron/loading/index.js"
+  ],
+  "question": "How does the code handle loading indicators in the Electron application?"
+ },
+ {
+  "files": [
+   "src/store/theme/index.js"
+  ],
+  "question": "How does the theme store handle changes to the system theme and update the application state accordingly?"
+ },
+ {
+  "files": [
+   "vite.config.js"
+  ],
+  "question": "How is the Vite configuration structured to optimize the development environment's build performance?"
+ },
+ {
+  "files": [
+   "src/main.js"
+  ],
+  "question": "How is the application bootstrap process initialized with a router in the codebase?"
+ },
+  {
+    "question": "How does the application determine and validate the paths for external binaries (like scrcpy, adb, and gnirehtet) at startup, and which module or file manages this logic?",
+    "files": [
+      "electron/configs/scrcpy/index.js",
+      "electron/configs/android-platform-tools/index.js",
+      "electron/configs/gnirehtet/index.js"
+    ]
+  },
+  {
+    "question": "Which parts of the source code implement the QR code scanning feature for wireless pairing, what libraries are used, and how is the scanned data processed to establish a connection?",
+    "files": [
+      "src/utils/device/generateAdbPairingQR/index.js",
+      "src/pages/device/components/WirelessGroup/QrAction/index.vue",
+      "package.json"
+    ]
+  },
+  {
+    "question":"How is the inter-process communication handled between the Electron front end and the underlying scrcpy process? Which IPC channels or events are defined in the code?",
+    "files": [
+      "electron/exposes/scrcpy/index.js",
+      "electron/exposes/scrcpy/helper.js",
+      "electron/preload.js",
+      "electron/exposes/index.js",
+      "electron/helpers/index.js",
+      "electron/configs/scrcpy/index.js",
+      "src/pages/device/components/MirrorAction/index.vue",
+      "src/components/QuickBar/components/Terminal/components/TerminalDialog/composables/scrcpy.js",
+      "src/store/preference/index.js",
+      "src/bootstrap/default/index.js"
+    ]
+  },
+  {
+    "question": "Where in the codebase are the user preference configurations (for video, audio, window controls, etc.) defined and saved, and how are these settings applied to the mirroring process?",
+    "files": [
+      "src/store/preference/model/video/index.js",
+      "src/store/preference/model/audio/index.js",
+      "src/store/preference/model/window/index.js",
+      "src/store/preference/model/device/index.js",
+      "src/store/preference/model/input/index.js",
+      "src/store/preference/model/record/index.js",
+      "src/store/preference/model/common/index.js",
+      "src/pages/device/components/MirrorAction/index.vue"
+    ]
+  },
+  {
+    "question": "What is the implementation strategy for the auto-connect and auto-mirroring features? In which module or function does the logic reside, and how does it interact with device detection?",
+    "files": [
+      "src/store/preference/model/common/index.js",
+      "electron/configs/android-platform-tools/index.js",
+      "electron/configs/scrcpy/index.js",
+      "src/store/preference/model/video/index.js",
+      "src/utils/device/generateAdbPairingQR/index.js",
+      "src/pages/device/components/WirelessGroup/QrAction/index.vue"
+    ]
+  },
+  {
+    "question": "How are batch processing operations (such as batch file management, batch app installation, and execution of scripts) implemented in the source code? Which parts handle the scheduling and execution of these tasks?",
+    "files": [
+      "src/composables/useFileActions/index.js",
+      "src/composables/useInstallAction/index.js",
+      "src/composables/useShellAction/index.js",
+      "src/store/task/index.js"
+    ]
+  },
+  {
+    "question": "Which file or module is responsible for mapping user shortcuts (for device control actions like home, back, screenshot, etc.) to the underlying adb or scrcpy commands, and how can these mappings be customized?",
+    "files": [
+      "electron/resources/extra/linux/scrcpy/scrcpy.1",
+      "src/store/preference/model/input/index.js",
+      "src/components/PreferenceForm/components/SelectKeyboardInject/index.vue"
+    ]
+  }
+]

@@ -55,8 +55,7 @@ Please check other specific modules of configuration, for detailed explanation o
 |-----------------------------------------|-------------|---------------|---------------|
 | provider | Database provider (kind) | "chromadb", "faiss" | "chromadb" |
 | collection_name | Name of the collection to create | `str` | "default_collection" |
-| chromadb_path | Path to store the ChromaDB database |  | `$PERSIST_DIR/chroma/` |
-| faiss_path | Path to store the FAISS database |  | `$PERSIST_DIR/faiss/` |
+| persist_dir | Path to store the database locally |  | `$PERSIST_DIR/` |
 
 ### 🏷️ `MetadataConfig`
 

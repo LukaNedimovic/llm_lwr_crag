@@ -122,11 +122,7 @@ class DBConfig(BaseModel):
 
     provider: Literal["chromadb", "faiss"] = DEFAULT_ARGS.retriever.db.provider  # type: ignore  # noqa: E501
     collection_name: Optional[str] = DEFAULT_ARGS.retriever.db.collection_name
-
-    # ChromaDB related arguments
-    chromadb_path: Optional[str] = DEFAULT_ARGS.retriever.db.chromadb_path
-    # FAISS related arguments
-    faiss_path: Optional[str] = DEFAULT_ARGS.retriever.db.faiss_path
+    persist_dir: Optional[str] = DEFAULT_ARGS.retriever.db.persist_dir
 
     @model_validator(mode="before")
     def check_required_properties(cls, values):
