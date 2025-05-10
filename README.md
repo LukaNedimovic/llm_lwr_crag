@@ -1,9 +1,6 @@
 # 🤖 LLM Listwise Reranker for CodeRAG
 
-**LLM_LWR_CRAG** is a RAG implementation, with high degree of customization.
-
-Originally implemented as a part of JetBrains Internship Application Test Task.
-
+**LLM_LWR_CRAG** is a RAG pipeline implementation, with high degree of customization.
 
 ## 🏗 Implementation
 ### ℹ️ General
